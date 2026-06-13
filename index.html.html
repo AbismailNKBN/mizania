@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ميزانيتي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --border: #2e3450;
+    --accent: #4f8ef7;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --text: #e8eaf6;
+    --muted: #7c84a3;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 60px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-bottom: 24px;
+  }
+
+  /* ── Balances ── */
+  .balances {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .bal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    position: relative;
+  }
+  .bal-card .label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .bal-card .amount {
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+  .bal-card .currency {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .bal-card.cash .amount { color: var(--yellow); }
+  .bal-card.ccp .amount  { color: var(--accent); }
+  .bal-card .edit-bal {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 0.75rem; padding: 2px 5px;
+    border-radius: 6px;
+  }
+  .bal-card .edit-bal:hover { color: var(--text); background: var(--border); }
+
+  .total-card {
+    background: linear-gradient(135deg, #1e2a4a 0%, #21263a 100%);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .total-card .tl { font-size: 0.85rem; color: var(--muted); }
+  .total-card .tv { font-size: 1.6rem; font-weight: 900; color: var(--accent); }
+
+  /* ── Form ── */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 24px;
+  }
+  .form-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; display: grid; }
+
+  input, select {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.88rem;
+    padding: 10px 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+
+  .type-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .type-btn {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .type-btn.active-expense { background: #3d1515; border-color: var(--red); color: var(--red); }
+  .type-btn.active-income  { background: #0e3028; border-color: var(--green); color: var(--green); }
+
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.2s;
+  }
+  .submit-btn:hover { opacity: 0.88; }
+
+  /* ── Transactions ── */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .section-title { font-size: 0.9rem; font-weight: 700; }
+  .clear-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); font-family: 'Cairo', sans-serif;
+    font-size: 0.75rem; padding: 4px 10px;
+    border-radius: 8px; cursor: pointer;
+  }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .tx-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .tx-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+
+  .tx-left { display: flex; flex-direction: column; gap: 2px; }
+  .tx-desc { font-size: 0.9rem; font-weight: 600; }
+  .tx-meta { font-size: 0.72rem; color: var(--muted); }
+  .tx-right { display: flex; align-items: center; gap: 10px; }
+  .tx-amount { font-size: 1rem; font-weight: 700; }
+  .tx-amount.income  { color: var(--green); }
+  .tx-amount.expense { color: var(--red); }
+  .tx-del {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 1rem; padding: 2px 5px;
+    border-radius: 6px;
+  }
+  .tx-del:hover { color: var(--red); background: #3d1515; }
+
+  .empty-msg {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 28px 0;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    width: 90%; max-width: 320px;
+  }
+  .modal h3 { margin-bottom: 14px; font-size: 1rem; }
+  .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+  .modal-btns button {
+    flex: 1; padding: 10px;
+    border-radius: 10px; border: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-cancel { background: var(--surface); color: var(--muted); }
+  .btn-save   { background: var(--accent); color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>💰 ميزانيتي</h1>
+<p class="subtitle">تتبع بسيط — كاش + CCP</p>
+
+<!-- Balances -->
+<div class="balances">
+  <div class="bal-card cash">
+    <button class="edit-bal" onclick="openModal('cash')">✏️</button>
+    <div class="label">كاش</div>
+    <div class="amount" id="cashBal">0</div>
+    <div class="currency">دج</div>
+  </div>
+  <div class="bal-card ccp">
+    <button class="edit-bal" onclick="openModal('ccp')">✏️</button>
+    <div class="label">CCP</div>
+    <div class="amount" id="ccpBal">0</div>
+    <div class="currency">دج</div>
+  </div>
+</div>
+
+<div class="total-card">
+  <div class="tl">المجموع الكلي</div>
+  <div class="tv"><span id="totalBal">0</span> دج</div>
+</div>
+
+<!-- Form -->
+<div class="form-card">
+  <div class="form-title">إضافة حركة</div>
+  <div class="type-toggle">
+    <button class="type-btn active-expense" id="btnExpense" onclick="setType('expense')">🔴 مصروف</button>
+    <button class="type-btn" id="btnIncome"  onclick="setType('income')">🟢 دخل</button>
+  </div>
+  <div class="form-row">
+    <input type="text" id="descInput" placeholder="وصف (أكل، نقل، شحن…)" />
+  </div>
+  <div class="form-row triple">
+    <input type="number" id="amountInput" placeholder="المبلغ" min="0" />
+    <select id="walletSelect">
+      <option value="cash">كاش</option>
+      <option value="ccp">CCP</option>
+    </select>
+    <input type="date" id="dateInput" />
+  </div>
+  <button class="submit-btn" onclick="addTransaction()">✅ إضافة</button>
+</div>
+
+<!-- List -->
+<div class="section-header">
+  <div class="section-title">📋 الحركات</div>
+  <button class="clear-btn" onclick="clearAll()">مسح الكل</button>
+</div>
+<div class="tx-list" id="txList">
+  <div class="empty-msg">لا توجد حركات بعد — أضف أول واحدة 👆</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">تعديل الرصيد</h3>
+    <input type="number" id="modalInput" placeholder="الرصيد الجديد (دج)" />
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+      <button class="btn-save"   onclick="saveBalance()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── State ──
+  let state = {
+    cash: 0,
+    ccp:  0,
+    transactions: [],
+    currentType: 'expense'
+  };
+
+  // ── Load ──
+  function load() {
+    const saved = localStorage.getItem('mizania_v2');
+    if (saved) state = JSON.parse(saved);
+    // default today
+    document.getElementById('dateInput').valueAsDate = new Date();
+    render();
+  }
+
+  function save() { localStorage.setItem('mizania_v2', JSON.stringify(state)); }
+
+  // ── Type toggle ──
+  function setType(t) {
+    state.currentType = t;
+    document.getElementById('btnExpense').className = 'type-btn' + (t === 'expense' ? ' active-expense' : '');
+    document.getElementById('btnIncome').className  = 'type-btn' + (t === 'income'  ? ' active-income'  : '');
+  }
+
+  // ── Add ──
+  function addTransaction() {
+    const desc   = document.getElementById('descInput').value.trim();
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    const wallet = document.getElementById('walletSelect').value;
+    const date   = document.getElementById('dateInput').value;
+
+    if (!desc || isNaN(amount) || amount <= 0) {
+      alert('اكتب الوصف والمبلغ');
+      return;
+    }
+
+    const sign = state.currentType === 'expense' ? -1 : 1;
+    state[wallet] += sign * amount;
+
+    state.transactions.unshift({
+      id: Date.now(),
+      desc, amount, wallet, date,
+      type: state.currentType
+    });
+
+    save();
+    render();
+    document.getElementById('descInput').value = '';
+    document.getElementById('amountInput').value = '';
+    document.getElementById('dateInput').valueAsDate = new Date();
+  }
+
+  // ── Delete ──
+  function deleteTransaction(id) {
+    const tx = state.transactions.find(t => t.id === id);
+    if (!tx) return;
+    const sign = tx.type === 'expense' ? 1 : -1;
+    state[tx.wallet] += sign * tx.amount;
+    state.transactions = state.transactions.filter(t => t.id !== id);
+    save();
+    render();
+  }
+
+  // ── Clear ──
+  function clearAll() {
+    if (!confirm('مسح كل الحركات؟ الأرصدة تبقى.')) return;
+    state.transactions = [];
+    save();
+    render();
+  }
+
+  // ── Modal ──
+  let editingWallet = null;
+  function openModal(w) {
+    editingWallet = w;
+    document.getElementById('modalTitle').textContent = w === 'cash' ? 'تعديل رصيد الكاش' : 'تعديل رصيد CCP';
+    document.getElementById('modalInput').value = state[w];
+    document.getElementById('modalOverlay').classList.add('open');
+    document.getElementById('modalInput').focus();
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    editingWallet = null;
+  }
+  function saveBalance() {
+    const val = parseFloat(document.getElementById('modalInput').value);
+    if (isNaN(val)) return;
+    state[editingWallet] = val;
+    save(); render(); closeModal();
+  }
+
+  // ── Render ──
+  function render() {
+    const fmt = n => n.toLocaleString('ar-DZ');
+
+    document.getElementById('cashBal').textContent  = fmt(state.cash);
+    document.getElementById('ccpBal').textContent   = fmt(state.ccp);
+    document.getElementById('totalBal').textContent = fmt(state.cash + state.ccp);
+
+    const list = document.getElementById('txList');
+    if (state.transactions.length === 0) {
+      list.innerHTML = '<div class="empty-msg">لا توجد حركات بعد — أضف أول واحدة 👆</div>';
+      return;
+    }
+
+    list.innerHTML = state.transactions.map(tx => {
+      const sign   = tx.type === 'income' ? '+' : '-';
+      const cls    = tx.type;
+      const wallet = tx.wallet === 'cash' ? '💵 كاش' : '🏦 CCP';
+      const d      = tx.date ? new Date(tx.date).toLocaleDateString('ar-DZ') : '';
+      return `
+        <div class="tx-item">
+          <div class="tx-left">
+            <div class="tx-desc">${tx.desc}</div>
+            <div class="tx-meta">${wallet} · ${d}</div>
+          </div>
+          <div class="tx-right">
+            <div class="tx-amount ${cls}">${sign}${tx.amount.toLocaleString('ar-DZ')} دج</div>
+            <button class="tx-del" onclick="deleteTransaction(${tx.id})">🗑</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // close modal on overlay click
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // enter to submit
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('modalOverlay').classList.contains('open')) {
+      saveBalance();
+    }
+  });
+
+  load();
+</script>
+</body>
+</html>
