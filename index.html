@@ -21,8 +21,8 @@
     --green: #10b981;
     --red: #ef4444;
     --yellow: #f59e0b;
-    --text: #ffffff;      /* تم رفع التباين لأقصى حد للقراءة المريحة */
-    --muted: #a3b1cc;     /* تم تفتيح لون النصوص الثانوية لنجاح الفحص الأمني للتباين */
+    --text: #ffffff;      
+    --muted: #a3b1cc;     
     --radius: 16px;
   }
 
@@ -37,55 +37,51 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  h1 { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 6px; letter-spacing: -0.5px; }
-  .subtitle { text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; transition: color 0.3s; }
+  h1 { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 6px; }
+  .subtitle { text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
 
   .balances { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
-  .bal-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; position: relative; transition: border-color 0.2s; }
-  .bal-card:focus-within { border-color: var(--accent); }
+  .bal-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; position: relative; }
   .bal-card .label { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
   
-  /* حل مشكلة قلب الأرقام بالـ CSS */
   .bal-card .amount { font-size: 1.65rem; font-weight: 900; direction: ltr; display: inline-block; }
   .bal-card .currency { font-size: 0.8rem; color: var(--muted); margin-top: 4px; font-weight: bold; }
   .bal-card.cash .amount { color: var(--yellow); }
   .bal-card.ccp .amount  { color: var(--accent); }
   
-  /* تحسين حجم الأزرار للموبايل لسهولة الضغط */
-  .bal-card .edit-bal { position: absolute; top: 10px; left: 10px; background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 0.9rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.2s; }
-  .bal-card .edit-bal:hover { background: var(--accent); }
+  .bal-card .edit-bal { position: absolute; top: 10px; left: 10px; background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 0.9rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
   .total-card { background: linear-gradient(135deg, #172544 0%, #1f2438 100%); border: 2px solid var(--accent); border-radius: var(--radius); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
   .total-card .tl { font-size: 0.95rem; color: var(--muted); font-weight: 600; }
   .total-card .tv { font-size: 1.8rem; font-weight: 900; color: #60a5fa; direction: ltr; display: inline-block; }
 
   .form-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 28px; }
-  .form-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--text); letter-spacing: 0.5px; }
+  .form-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
 
   .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
-  .form-row.triple { grid-template-columns: 1.2fr 1fr 1.2fr; display: grid; }
+  .form-row.triple { grid-template-columns: 1fr 1fr; display: grid; }
+  .form-row.quad { grid-template-columns: 1.2fr 1fr 1.2fr; display: grid; }
 
-  /* تكبير حقول الإدخال لتسهيل الكتابة من الهاتف */
-  input, select { width: 100%; background: var(--card); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 1rem; padding: 14px 16px; outline: none; transition: all 0.2s; -webkit-appearance: none; }
+  input, select { width: 100%; background: var(--card); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 1rem; padding: 14px 16px; outline: none; -webkit-appearance: none; }
   input:focus, select:focus { border-color: var(--accent); background: #242b42; }
   input::placeholder { color: #7685a9; }
 
+  select#categorySelect { border-color: var(--yellow); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: left 12px center; background-size: 16px; }
+
   .type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-  .type-btn { padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .type-btn { padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
   .type-btn.active-expense { background: #4c1d1d; border-color: var(--red); color: #fca5a5; }
   .type-btn.active-income  { background: #064e3b; border-color: var(--green); color: #6ee7b7; }
 
-  .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 6px; transition: background 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
-  .submit-btn:hover { background: #2563eb; }
+  .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 6px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
 
   .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .section-title { font-size: 1rem; font-weight: 700; }
-  .clear-btn { background: none; border: 2px solid var(--border); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.85rem; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+  .clear-btn { background: none; border: 2px solid var(--border); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.85rem; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; }
   .clear-btn:hover { border-color: var(--red); color: var(--red); background: #4c1d1d; }
 
   .tx-list { display: flex; flex-direction: column; gap: 10px; }
-  .tx-item { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; animation: fadeIn 0.25s ease; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+  .tx-item { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
 
   .tx-left { display: flex; flex-direction: column; gap: 4px; }
   .tx-desc { font-size: 1rem; font-weight: 700; }
@@ -95,20 +91,19 @@
   .tx-amount.income  { color: #34d399; }
   .tx-amount.expense { color: #f87171; }
   
-  .tx-btn { background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 1rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s; }
+  .tx-btn { background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 1rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
   .tx-btn.edit:hover { background: var(--accent); }
   .tx-btn.del:hover { color: var(--red); background: #4c1d1d; }
 
   .empty-msg { text-align: center; color: var(--muted); font-size: 0.95rem; padding: 36px 0; }
 
-  /* شاشة الإعدادات الأولى المخصصة للأصدقاء */
   .setup-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 999; padding: 40px 24px; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
   .setup-screen h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 12px; }
   .setup-screen p { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6; }
 
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; width: 90%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+  .modal { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; width: 90%; max-width: 340px; }
   .modal h3 { margin-bottom: 16px; font-size: 1.1rem; text-align: center; }
   .modal-btns { display: flex; gap: 12px; margin-top: 20px; }
   .modal-btns button { flex: 1; padding: 14px; border-radius: 12px; border: none; font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
@@ -119,15 +114,15 @@
 <body>
 
 <div class="setup-screen" id="setupScreen">
-  <h2>أهلاً بك في ميزانيتي 💰</h2>
-  <p>لتفعيل نسختك السحابية الخاصة، يرجى لصق رابط (Web App URL) المستخرج من كود Google Sheets الخاص بك أدناه:</p>
+  <h2>أهلاً بك في ميزانيتي الذكي 💰</h2>
+  <p>لتفعيل النسخة السحابية المخصصة، يرجى لصق رابط (Web App URL) الخاص بجدول البيانات أدناه:</p>
   <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" style="margin-bottom: 20px;" />
-  <button class="submit-btn" onclick="saveScriptUrl()">🚀 حفظ ورط الجدول</button>
+  <button class="submit-btn" onclick="saveScriptUrl()">🚀 حفظ وربط الجدول</button>
 </div>
 
 <div class="app-container">
-  <h1>💰 ميزانيتي</h1>
-  <p class="subtitle" id="statusText">تتبع بسيط — كاش + CCP</p>
+  <h1>💰 ميزانيتي الذكي</h1>
+  <p class="subtitle" id="statusText">تتبع تلقائي مدعوم بالذكاء الاصطناعي المحلي</p>
 
   <div class="balances">
     <div class="bal-card cash">
@@ -150,15 +145,27 @@
   </div>
 
   <div class="form-card">
-    <div class="form-title" id="formActionTitle">إضافة حركة جديد</div>
+    <div class="form-title" id="formActionTitle">إضافة حركة جديدة</div>
     <div class="type-toggle">
       <button class="type-btn active-expense" id="btnExpense" onclick="setType('expense')">🔴 مصروف</button>
       <button class="type-btn" id="btnIncome"  onclick="setType('income')">🟢 دخل</button>
     </div>
     <div class="form-row">
-      <input type="text" id="descInput" placeholder="وصف الحركية (أكل، نقل، شحن…)" />
+      <input type="text" id="descInput" placeholder="اكتب هنا (مثال: بيتزا، تاكسي، شهرية...)" oninput="predictCategory(this.value)" />
     </div>
     <div class="form-row triple">
+      <select id="categorySelect">
+        <option value="🍔 أكل وشرب">🍔 أكل وشرب</option>
+        <option value="🚗 نقل ومواصلات">🚗 نقل ومواصلات</option>
+        <option value="🏠 سكن وفواتير">🏠 سكن وفواتير</option>
+        <option value="📱 اشتراكات واتصالات">📱 اشتراكات واتصالات</option>
+        <option value="🛍️ تسوق عام">🛍️ تسوق عام</option>
+        <option value="🩺 صحة وعلاج">🩺 صحة وعلاج</option>
+        <option value="💰 أجر ودخل">💰 أجر ودخل</option>
+        <option value="🔄 أخرى">🔄 أخرى</option>
+      </select>
+    </div>
+    <div class="form-row quad">
       <input type="number" id="amountInput" placeholder="المبلغ" min="0" />
       <select id="walletSelect">
         <option value="cash">كاش</option>
@@ -166,25 +173,25 @@
       </select>
       <input type="date" id="dateInput" />
     </div>
-    <button class="submit-btn" id="btnSubmitForm" onclick="addTransaction()">✅ إضافة</button>
+    <button class="submit-btn" id="btnSubmitForm" onclick="addTransaction()">✅ إضافة الحركية</button>
   </div>
 
   <div class="section-header">
-    <div class="section-title">📋 الحركات الحالية</div>
+    <div class="section-title">📋 السجل المالي الحالي</div>
     <button class="clear-btn" onclick="clearAll()">مسح الكل</button>
   </div>
   <div class="tx-list" id="txList">
-    <div class="empty-msg">لا توجد حركات بعد — أضف أول واحدة 👆</div>
+    <div class="empty-msg">لا توجد حركات مسجلة حالياً.</div>
   </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
-    <h3 id="modalTitle">تعديل الرصيد الأساسي</h3>
+    <h3 id="modalTitle">تعديل الرصيد</h3>
     <input type="number" id="modalInput" placeholder="الرصيد الجديد (دج)" />
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
-      <button class="btn-save"   onclick="saveBalance()">حفظ الرصيد</button>
+      <button class="btn-save"   onclick="saveBalance()">حفظ</button>
     </div>
   </div>
 </div>
@@ -193,13 +200,47 @@
   let state = { cash: 0, ccp: 0, transactions: [], currentType: 'expense' };
   let editingTxId = null;
 
+  const aiKeywords = {
+    '🍔 أكل وشرب': ['اكل', 'طعام', 'بيتزا', 'شاورما', 'غداء', 'عشاء', 'فطور', 'قهوة', 'مطعم', 'حليب', 'خبز', 'قاطو', 'شيبس', 'لحم', 'دجاج', 'خضر', 'فواكه', 'مقهى'],
+    '🚗 نقل ومواصلات': ['نقل', 'تاكسي', 'يسير', 'حافلة', 'كورسا', 'بنزين', 'مازوت', 'سيارة', 'غسيل', 'ميكانيكي', 'قطار', 'مترو'],
+    '🏠 سكن وفواتير': ['كراء', 'كري', 'كهرباء', 'غاز', 'سونلغاز', 'ماء', 'فاتورة', 'سكن', 'تأثيث', 'صيانة'],
+    '📱 اشتراكات واتصالات': ['انترنت', 'موبيليس', 'جيزي', 'أوريدو', 'شحن', 'فليكسي', 'رصيد', 'اشتراك', 'نتفليكس', 'سبوتيفاي', 'مودم'],
+    '🛍️ تسوق عام': ['شراء', 'ملابس', 'حذاء', 'سروال', 'قميص', 'ساعة', 'هاتف', 'سماعات', 'خاتم', 'علي', 'aliexpress', 'ماركت'],
+    '🩺 صحة وعلاج': ['طبيب', 'دواء', 'صيدلية', 'عيادة', 'تحاليل', 'مرض', 'سبيطار', 'مستشفى'],
+    '💰 أجر ودخل': ['راتب', 'شهرية', 'اجر', 'منحة', 'فايدة', 'فائدة', 'عمل', 'فريلانس', 'بيع', 'ربح', 'دولار', 'usdt']
+  };
+
+  // تم تطبيق الدالة الذكية المحدثة هنا لإعادة ضبط الحقول تلقائياً في حال المسح أو الفراغات
+  function predictCategory(text) {
+    if (!text || text.trim() === "") {
+      setType('expense');
+      document.getElementById('categorySelect').value = '🔄 أخرى';
+      return;
+    }
+    
+    const cleanText = text.toLowerCase();
+    
+    for (const [category, keywords] of Object.entries(aiKeywords)) {
+      for (const keyword of keywords) {
+        if (cleanText.includes(keyword)) {
+          document.getElementById('categorySelect').value = category;
+          if (category === '💰 أجر ودخل') {
+            setType('income');
+          } else {
+            setType('expense');
+          }
+          return;
+        }
+      }
+    }
+  }
+
   function load() {
-    const saved = localStorage.getItem('mizania_v2');
+    const saved = localStorage.getItem('mizania_v3_ai');
     if (saved) state = JSON.parse(saved);
     document.getElementById('dateInput').valueAsDate = new Date();
     render();
     
-    // فحص إذا كان التطبيق يفتح لأول مرة لإظهار شاشة الإعداد
     const savedUrl = localStorage.getItem('scriptUrl');
     if (!savedUrl) {
       document.getElementById('setupScreen').style.display = 'flex';
@@ -215,17 +256,17 @@
       document.getElementById('setupScreen').style.display = 'none';
       sendOfflineQueue();
     } else {
-      alert('الرجاء إدخال رابط إكسكيوتر صحيح مأخوذ من نص الويب الخاص بجوجل سكريبت');
+      alert('الرجاء إدخال رابط صحيح من Google Script');
     }
   }
 
-  function save() { localStorage.setItem('mizania_v2', JSON.stringify(state)); }
+  function save() { localStorage.setItem('mizania_v3_ai', JSON.stringify(state)); }
 
-  function sendDataToSheets(amount, description, type) {
+  function sendDataToSheets(amount, description, type, category) {
     const url = localStorage.getItem('scriptUrl');
     if (!url) return;
 
-    const payload = { amount, description, type };
+    const payload = { amount, description, type, category };
 
     if (!navigator.onLine) {
       saveToOfflineQueue(payload);
@@ -244,9 +285,9 @@
   }
 
   function saveToOfflineQueue(payload) {
-    let queue = JSON.parse(localStorage.getItem('mizania_offline_queue')) || [];
+    let queue = JSON.parse(localStorage.getItem('mizania_ai_queue')) || [];
     queue.push(payload);
-    localStorage.setItem('mizania_offline_queue', JSON.stringify(queue));
+    localStorage.setItem('mizania_ai_queue', JSON.stringify(queue));
   }
 
   function sendOfflineQueue() {
@@ -254,10 +295,10 @@
     const url = localStorage.getItem('scriptUrl');
     if (!url) return;
 
-    let queue = JSON.parse(localStorage.getItem('mizania_offline_queue')) || [];
+    let queue = JSON.parse(localStorage.getItem('mizania_ai_queue')) || [];
     if (queue.length === 0) return;
 
-    document.getElementById('statusText').textContent = '⏳ جاري مزامنة العمليات السابقة مع السحابة...';
+    document.getElementById('statusText').textContent = '⏳ جاري مزامنة الحركات السابقة...';
 
     let promises = queue.map(payload => {
       return fetch(url, {
@@ -269,9 +310,9 @@
 
     Promise.all(promises)
       .then(() => {
-        localStorage.removeItem('mizania_offline_queue');
+        localStorage.removeItem('mizania_ai_queue');
         updateStatusNotification(false);
-        alert('تمت مزامنة كافة العمليات بنجاح مع جدولك الخاص! 🎉');
+        alert('تمت مزامنة كافة العمليات المعلقة بنجاح! 🎉');
       })
       .catch(err => console.error(err));
   }
@@ -279,10 +320,10 @@
   function updateStatusNotification(isOffline) {
     const txt = document.getElementById('statusText');
     if (isOffline) {
-      txt.textContent = '⚠️ تعمل أوفلاين (سيتم حفظ البيانات محلياً والمزامنة لاحقاً)';
+      txt.textContent = '⚠️ تعمل أوفلاين حالياً (الحفظ محلي)';
       txt.style.color = 'var(--yellow)';
     } else {
-      txt.textContent = 'تتبع بسيط — كاش + CCP';
+      txt.textContent = 'تتبع تلقائي مدعوم بالذكاء الاصطناعي المحلي';
       txt.style.color = 'var(--muted)';
     }
   }
@@ -298,6 +339,7 @@
 
   function addTransaction() {
     const desc   = document.getElementById('descInput').value.trim();
+    const category = document.getElementById('categorySelect').value;
     const amount = parseFloat(document.getElementById('amountInput').value);
     const wallet = document.getElementById('walletSelect').value;
     const date   = document.getElementById('dateInput').value;
@@ -312,28 +354,28 @@
         const oldSign = oldTx.type === 'expense' ? -1 : 1;
         state[oldTx.wallet] -= oldSign * oldTx.amount;
 
-        state.transactions[txIndex] = { id: editingTxId, desc, amount, wallet, date, type: state.currentType };
+        state.transactions[txIndex] = { id: editingTxId, desc, amount, wallet, date, type: state.currentType, category };
         state[wallet] += sign * amount;
 
-        sendDataToSheets(sign * amount, `تعديل حركية: ${desc}`, `${wallet === 'cash' ? 'كاش' : 'CCP'} (${state.currentType === 'income' ? 'دخل' : 'مصروف'})`);
+        sendDataToSheets(sign * amount, `تعديل: ${desc}`, `${wallet === 'cash' ? 'كاش' : 'CCP'} (${state.currentType === 'income' ? 'دخل' : 'مصروف'})`, category);
       }
       editingTxId = null;
       const submitBtn = document.getElementById('btnSubmitForm');
-      submitBtn.textContent = '✅ إضافة';
-      submitBtn.style.background = 'var(--accent)';
-      document.getElementById('formActionTitle').textContent = 'إضافة حركة جديد';
+      submitBtn.textContent = '✅ إضافة الحركية';
+      document.getElementById('formActionTitle').textContent = 'إضافة حركة جديدة';
     } else {
       state[wallet] += sign * amount;
-      state.transactions.unshift({ id: Date.now(), desc, amount, wallet, date, type: state.currentType });
+      state.transactions.unshift({ id: Date.now(), desc, amount, wallet, date, type: state.currentType, category });
       
       const walletLabel = wallet === 'cash' ? 'كاش' : 'CCP';
       const typeLabel   = state.currentType === 'income' ? 'دخل' : 'مصروف';
-      sendDataToSheets(sign * amount, desc, walletLabel + ' (' + typeLabel + ')');
+      sendDataToSheets(sign * amount, desc, walletLabel + ' (' + typeLabel + ')', category);
     }
 
     save(); render();
     document.getElementById('descInput').value = '';
     document.getElementById('amountInput').value = '';
+    document.getElementById('categorySelect').value = '🔄 أخرى';
     document.getElementById('dateInput').valueAsDate = new Date();
   }
 
@@ -342,6 +384,7 @@
     if (!tx) return;
 
     document.getElementById('descInput').value = tx.desc;
+    document.getElementById('categorySelect').value = tx.category || '🔄 أخرى';
     document.getElementById('amountInput').value = tx.amount;
     document.getElementById('walletSelect').value = tx.wallet;
     document.getElementById('dateInput').value = tx.date;
@@ -349,7 +392,6 @@
 
     const submitBtn = document.getElementById('btnSubmitForm');
     submitBtn.textContent = '💾 حفظ التعديل المالي';
-    submitBtn.style.background = 'var(--green)';
     document.getElementById('formActionTitle').textContent = 'تعديل الحركة الحالية ✏️';
     
     editingTxId = id;
@@ -364,14 +406,13 @@
     state[tx.wallet] += sign * tx.amount;
     state.transactions = state.transactions.filter(t => t.id !== id);
     save(); render();
-    sendDataToSheets(-sign * tx.amount, 'حذف حركة: ' + tx.desc, tx.wallet === 'cash' ? 'كاش' : 'CCP');
+    sendDataToSheets(-sign * tx.amount, 'حذف حركة: ' + tx.desc, tx.wallet === 'cash' ? 'كاش' : 'CCP', tx.category);
   }
 
   function clearAll() {
-    if (!confirm('تنبيه: مسح كل الحركات المسجلة؟ الأرصدة الحالية ستبقى ثابتة.')) return;
+    if (!confirm('تنبيه: مسح كل الحركات؟ الأرصدة الحالية ستبقى ثابتة.')) return;
     state.transactions = [];
     save(); render();
-    sendDataToSheets(0, 'تصفير شامل للحركات المسجلة', 'تنبيه');
   }
 
   let editingWallet = null;
@@ -389,11 +430,10 @@
     const diff = val - state[editingWallet];
     state[editingWallet] = val;
     save(); render(); closeModal();
-    sendDataToSheets(diff, 'تعديل رصيد يدوي مباشر', editingWallet === 'cash' ? 'كاش' : 'CCP');
+    sendDataToSheets(diff, 'تعديل رصيد يدوي مباشر', editingWallet === 'cash' ? 'كاش' : 'CCP', '🔄 تعديل رصيد');
   }
 
   function render() {
-    // دالة التنسيق العبقرية لإضافة الفراغات للآلاف مع منع قلب الأرقام نهائياً
     const fmt = n => {
       const parts = n.toString().split('.');
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -406,7 +446,7 @@
     const list = document.getElementById('txList');
     
     if (state.transactions.length === 0) {
-      list.innerHTML = '<div class="empty-msg">لا توجد حركات مسجلة حالياً بعد — أضف حركة جديدة 👆</div>';
+      list.innerHTML = '<div class="empty-msg">لا توجد حركات مسجلة حالياً.</div>';
       return;
     }
     
@@ -414,11 +454,12 @@
       const sign   = tx.type === 'income' ? '+' : '-';
       const cls    = tx.type;
       const wallet = tx.wallet === 'cash' ? '💵 كاش' : '🏦 CCP';
+      const cat    = tx.category || '🔄 أخرى';
       const d      = tx.date ? new Date(tx.date).toLocaleDateString('ar-DZ') : '';
       return `<div class="tx-item">
         <div class="tx-left">
           <div class="tx-desc">${tx.desc}</div>
-          <div class="tx-meta">${wallet} · ${d}</div>
+          <div class="tx-meta">${wallet} · ${cat} · ${d}</div>
         </div>
         <div class="tx-right">
           <div class="tx-amount ${cls}">${sign}${fmt(tx.amount)} دج</div>
@@ -432,15 +473,6 @@
   document.getElementById('modalOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && document.getElementById('modalOverlay').classList.contains('open')) saveBalance();
-  });
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('SW Active'))
-      .catch(e => console.log('SW Error:', e));
-  }
 
   load();
 </script>
