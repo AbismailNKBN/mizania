@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ميزانيتي</title>
+<title>ميزانيتي الذكي v4.1 لبروفيسور</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f1117">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ميزانيتي">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
@@ -35,94 +34,106 @@
     min-height: 100vh;
     padding: 24px 16px 80px;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
   }
 
-  h1 { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 6px; }
-  .subtitle { text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+  .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .menu-btn { background: none; border: none; color: var(--text); font-size: 1.8rem; cursor: pointer; padding: 4px 8px; }
+  h1 { font-size: 1.6rem; font-weight: 900; }
+
+  .subtitle { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
 
   .balances { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
   .bal-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; position: relative; }
   .bal-card .label { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
-  
-  .bal-card .amount { font-size: 1.65rem; font-weight: 900; direction: ltr; display: inline-block; }
-  .bal-card .currency { font-size: 0.8rem; color: var(--muted); margin-top: 4px; font-weight: bold; }
+  .bal-card .amount { font-size: 1.5rem; font-weight: 900; direction: ltr; display: inline-block; }
   .bal-card.cash .amount { color: var(--yellow); }
   .bal-card.ccp .amount  { color: var(--accent); }
-  
-  .bal-card .edit-bal { position: absolute; top: 10px; left: 10px; background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 0.9rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  .bal-card .edit-bal { position: absolute; top: 10px; left: 10px; background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 0.8rem; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
   .total-card { background: linear-gradient(135deg, #172544 0%, #1f2438 100%); border: 2px solid var(--accent); border-radius: var(--radius); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
   .total-card .tl { font-size: 0.95rem; color: var(--muted); font-weight: 600; }
-  .total-card .tv { font-size: 1.8rem; font-weight: 900; color: #60a5fa; direction: ltr; display: inline-block; }
+  .total-card .tv { font-size: 1.6rem; font-weight: 900; color: #60a5fa; direction: ltr; display: inline-block; }
 
   .form-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 28px; }
-  .form-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .form-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
 
   .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
-  .form-row.triple { grid-template-columns: 1fr 1fr; display: grid; }
   .form-row.quad { grid-template-columns: 1.2fr 1fr 1.2fr; display: grid; }
 
-  input, select { width: 100%; background: var(--card); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 1rem; padding: 14px 16px; outline: none; -webkit-appearance: none; }
+  input, select { width: 100%; background: var(--card); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 1rem; padding: 14px 16px; outline: none; }
   input:focus, select:focus { border-color: var(--accent); background: #242b42; }
-  input::placeholder { color: #7685a9; }
-
-  select#categorySelect { border-color: var(--yellow); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: left 12px center; background-size: 16px; }
 
   .type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
   .type-btn { padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
   .type-btn.active-expense { background: #4c1d1d; border-color: var(--red); color: #fca5a5; }
   .type-btn.active-income  { background: #064e3b; border-color: var(--green); color: #6ee7b7; }
 
-  .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 6px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+  .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+
+  .export-btn { width: 100%; padding: 14px; background: #1e293b; color: #38bdf8; border: 2px dashed #0284c7; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+  .export-btn:hover { background: #0c4a6e; color: #fff; border-style: solid; }
 
   .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .section-title { font-size: 1rem; font-weight: 700; }
-  .clear-btn { background: none; border: 2px solid var(--border); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.85rem; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-  .clear-btn:hover { border-color: var(--red); color: var(--red); background: #4c1d1d; }
+  .clear-btn { background: none; border: 2px solid var(--border); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.85rem; padding: 6px 14px; border-radius: 10px; cursor: pointer; }
 
   .tx-list { display: flex; flex-direction: column; gap: 10px; }
   .tx-item { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-
   .tx-left { display: flex; flex-direction: column; gap: 4px; }
   .tx-desc { font-size: 1rem; font-weight: 700; }
   .tx-meta { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
   .tx-right { display: flex; align-items: center; gap: 12px; }
-  .tx-amount { font-size: 1.1rem; font-weight: 700; direction: ltr; display: inline-block; }
+  .tx-amount { font-size: 1.1rem; font-weight: 700; direction: ltr; }
   .tx-amount.income  { color: #34d399; }
   .tx-amount.expense { color: #f87171; }
   
-  .tx-btn { background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 1rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-  .tx-btn.edit:hover { background: var(--accent); }
-  .tx-btn.del:hover { color: var(--red); background: #4c1d1d; }
+  .tx-btn { background: var(--border); border: none; color: var(--text); cursor: pointer; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
 
-  .empty-msg { text-align: center; color: var(--muted); font-size: 0.95rem; padding: 36px 0; }
+  .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100vh; background: var(--surface); border-left: 2px solid var(--border); z-index: 999; padding: 30px 20px; transition: right 0.3s ease; overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+  .sidebar.open { right: 0; }
+  .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .close-sidebar { background: none; border: none; color: var(--red); font-size: 1.5rem; cursor: pointer; }
 
-  .setup-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 999; padding: 40px 24px; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-  .setup-screen h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 12px; }
-  .setup-screen p { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6; }
+  .analytics-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 16px; color: var(--accent); }
+  .chart-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+  .chart-row { background: var(--card); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); }
+  .chart-info { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+  .chart-bar-bg { width: 100%; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .chart-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width 0.5s ease; }
 
+  .setup-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 40px 24px; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
   .modal-overlay.open { display: flex; }
   .modal { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; width: 90%; max-width: 340px; }
-  .modal h3 { margin-bottom: 16px; font-size: 1.1rem; text-align: center; }
   .modal-btns { display: flex; gap: 12px; margin-top: 20px; }
   .modal-btns button { flex: 1; padding: 14px; border-radius: 12px; border: none; font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
-  .btn-cancel { background: var(--surface); color: var(--muted); border: 2px solid var(--border); }
-  .btn-save   { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
 
 <div class="setup-screen" id="setupScreen">
   <h2>أهلاً بك في ميزانيتي الذكي 💰</h2>
-  <p>لتفعيل النسخة السحابية المخصصة، يرجى لصق رابط (Web App URL) الخاص بجدول البيانات أدناه:</p>
+  <p>يرجى لصق رابط السكربت السحابي (Web App URL) للربط التلقائي والنسخ الاحتياطي السحابي الصامت:</p>
   <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" style="margin-bottom: 20px;" />
   <button class="submit-btn" onclick="saveScriptUrl()">🚀 حفظ وربط الجدول</button>
 </div>
 
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>📊 التحليل المالي الذكي</h2>
+    <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+  </div>
+  <div class="analytics-title">🔍 نسب إنفاقك وتصنيفاتك الحالية:</div>
+  <div class="chart-container" id="analyticsContainer"></div>
+</div>
+
 <div class="app-container">
-  <h1>💰 ميزانيتي الذكي</h1>
-  <p class="subtitle" id="statusText">تتبع تلقائي مدعوم بالذكاء الاصطناعي المحلي</p>
+  <div class="app-header">
+    <h1>💰 ميزانيتي الذكي</h1>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  </div>
+  <p class="subtitle" id="statusText">التعلم الإحصائي الحقيقي يحدث فقط عند قيامك بتصحيح وتعديل الحركات يدوياً</p>
 
   <div class="balances">
     <div class="bal-card cash">
@@ -151,19 +162,7 @@
       <button class="type-btn" id="btnIncome"  onclick="setType('income')">🟢 دخل</button>
     </div>
     <div class="form-row">
-      <input type="text" id="descInput" placeholder="اكتب هنا (مثال: بيتزا، تاكسي، شهرية...)" oninput="predictCategory(this.value)" />
-    </div>
-    <div class="form-row triple">
-      <select id="categorySelect">
-        <option value="🍔 أكل وشرب">🍔 أكل وشرب</option>
-        <option value="🚗 نقل ومواصلات">🚗 نقل ومواصلات</option>
-        <option value="🏠 سكن وفواتير">🏠 سكن وفواتير</option>
-        <option value="📱 اشتراكات واتصالات">📱 اشتراكات واتصالات</option>
-        <option value="🛍️ تسوق عام">🛍️ تسوق عام</option>
-        <option value="🩺 صحة وعلاج">🩺 صحة وعلاج</option>
-        <option value="💰 أجر ودخل">💰 أجر ودخل</option>
-        <option value="🔄 أخرى">🔄 أخرى</option>
-      </select>
+      <input type="text" id="descInput" placeholder="اكتب هنا (مثال: إنترنت، كراء، قهوة، راتب...)" />
     </div>
     <div class="form-row quad">
       <input type="number" id="amountInput" placeholder="المبلغ" min="0" />
@@ -174,6 +173,8 @@
       <input type="date" id="dateInput" />
     </div>
     <button class="submit-btn" id="btnSubmitForm" onclick="addTransaction()">✅ إضافة الحركية</button>
+    
+    <button class="export-btn" onclick="exportToCSV()">📥 تحميل السجل المالي الحالي (CSV)</button>
   </div>
 
   <div class="section-header">
@@ -197,52 +198,136 @@
 </div>
 
 <script>
-  let state = { cash: 0, ccp: 0, transactions: [], currentType: 'expense' };
+  let state = { cash: 0, ccp: 0, transactions: [], wordWeights: {} };
   let editingTxId = null;
 
-  const aiKeywords = {
-    '🍔 أكل وشرب': ['اكل', 'طعام', 'بيتزا', 'شاورما', 'غداء', 'عشاء', 'فطور', 'قهوة', 'مطعم', 'حليب', 'خبز', 'قاطو', 'شيبس', 'لحم', 'دجاج', 'خضر', 'فواكه', 'مقهى'],
-    '🚗 نقل ومواصلات': ['نقل', 'تاكسي', 'يسير', 'حافلة', 'كورسا', 'بنزين', 'مازوت', 'سيارة', 'غسيل', 'ميكانيكي', 'قطار', 'مترو'],
-    '🏠 سكن وفواتير': ['كراء', 'كري', 'كهرباء', 'غاز', 'سونلغاز', 'ماء', 'فاتورة', 'سكن', 'تأثيث', 'صيانة'],
-    '📱 اشتراكات واتصالات': ['انترنت', 'موبيليس', 'جيزي', 'أوريدو', 'شحن', 'فليكسي', 'رصيد', 'اشتراك', 'نتفليكس', 'سبوتيفاي', 'مودم'],
-    '🛍️ تسوق عام': ['شراء', 'ملابس', 'حذاء', 'سروال', 'قميص', 'ساعة', 'هاتف', 'سماعات', 'خاتم', 'علي', 'aliexpress', 'ماركت'],
-    '🩺 صحة وعلاج': ['طبيب', 'دواء', 'صيدلية', 'عيادة', 'تحاليل', 'مرض', 'سبيطار', 'مستشفى'],
-    '💰 أجر ودخل': ['راتب', 'شهرية', 'اجر', 'منحة', 'فايدة', 'فائدة', 'عمل', 'فريلانس', 'بيع', 'ربح', 'دولار', 'usdt']
+  const baselineDictionary = {
+    "راتب": "الأجر", "شهرية": "الأجر", "salaire": "الأجر", "prime": "الأجر",
+    "انترنت": "اشتراكات", "internet": "اشتراكات", "fibre": "اشتراكات", "مودم": "اشتراكات", "شحن": "اشتراكات",
+    "قهوة": "أكل وشرب", "مطعم": "أكل وشرب", "بيتزا": "أكل وشرب", "اكل": "أكل وشرب", "حليب": "أكل وشرب",
+    "تاكسي": "النقل", "حافلة": "النقل", "كوس": "النقل", "بنزين": "النقل", "essence": "النقل",
+    "طبيب": "الصحة", "دواء": "الصحة", "pharmacie": "الصحة",
+    "ملابس": "تسوق", "لبس": "تسوق", "حذاء": "تسوق"
   };
 
-  // تم تطبيق الدالة الذكية المحدثة هنا لإعادة ضبط الحقول تلقائياً في حال المسح أو الفراغات
-  function predictCategory(text) {
-    if (!text || text.trim() === "") {
-      setType('expense');
-      document.getElementById('categorySelect').value = '🔄 أخرى';
-      return;
-    }
-    
-    const cleanText = text.toLowerCase();
-    
-    for (const [category, keywords] of Object.entries(aiKeywords)) {
-      for (const keyword of keywords) {
-        if (cleanText.includes(keyword)) {
-          document.getElementById('categorySelect').value = category;
-          if (category === '💰 أجر ودخل') {
-            setType('income');
-          } else {
-            setType('expense');
-          }
-          return;
+  function tokenize(text) {
+    return text.toLowerCase().trim().split(/[\s,.\-_/\\]+/).filter(word => word.length > 2);
+  }
+
+  function predictCategoryStatistical(desc) {
+    const tokens = tokenize(desc);
+    if (tokens.length === 0) return "أخرى";
+
+    let scores = {};
+
+    tokens.forEach(token => {
+      if (state.wordWeights && state.wordWeights[token]) {
+        for (const [cat, weight] of Object.entries(state.wordWeights[token])) {
+          scores[cat] = (scores[cat] || 0) + weight;
         }
       }
+      for (const [key, cat] of Object.entries(baselineDictionary)) {
+        if (token.includes(key) || key.includes(token)) {
+          scores[cat] = (scores[cat] || 0) + 2;
+        }
+      }
+    });
+
+    let bestCategory = "أخرى";
+    let maxScore = 0;
+    for (const [cat, score] of Object.entries(scores)) {
+      if (score > maxScore) {
+        maxScore = score;
+        bestCategory = cat;
+      }
     }
+    return bestCategory;
+  }
+
+  // تم تعديلها: يتم استدعاؤها صامتاً لتحديث الأوزان فقط عند التعديل البشري الصريح
+  function updateWeightsSilent(desc, finalCategory) {
+    if (!state.wordWeights) state.wordWeights = {};
+    const tokens = tokenize(desc);
+    
+    tokens.forEach(token => {
+      if (!state.wordWeights[token]) state.wordWeights[token] = {};
+      state.wordWeights[token][finalCategory] = (state.wordWeights[token][finalCategory] || 0) + 1;
+    });
+  }
+
+  function exportToCSV() {
+    if (state.transactions.length === 0) {
+      alert('السجل المالي فارغ تماماً!');
+      return;
+    }
+    let csvContent = "\ufeff"; 
+    csvContent += "التاريخ,الوصف,المبلغ (دج),النوع,المحفظة,التصنيف\n";
+
+    state.transactions.forEach(tx => {
+      const typeLabel = tx.type === 'income' ? 'دخل' : 'مصروف';
+      const walletLabel = tx.wallet === 'cash' ? 'كاش' : 'CCP';
+      const cleanDesc = tx.desc.replace(/,/g, " "); 
+      const catLabel = tx.category || "أخرى";
+      csvContent += `${tx.date},${cleanDesc},${tx.amount},${typeLabel},${walletLabel},${catLabel}\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `mizania_v4.1_report_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+    if(sidebar.classList.contains('open')) calculateAndRenderAnalytics();
+  }
+
+  function calculateAndRenderAnalytics() {
+    const container = document.getElementById('analyticsContainer');
+    const expenses = state.transactions.filter(t => t.type === 'expense');
+    const totalExpense = expenses.reduce((sum, t) => sum + t.amount, 0);
+
+    if (expenses.length === 0) {
+      container.innerHTML = '<div class="empty-msg">لا توجد مصاريف للتحليل.</div>';
+      return;
+    }
+
+    const categoriesMap = {};
+    expenses.forEach(tx => {
+      const cat = tx.category || "أخرى";
+      categoriesMap[cat] = (categoriesMap[cat] || 0) + tx.amount;
+    });
+
+    let html = '';
+    for (const [cat, amt] of Object.entries(categoriesMap)) {
+      const percentage = totalExpense > 0 ? ((amt / totalExpense) * 100).toFixed(0) : 0;
+      html += `
+        <div class="chart-row">
+          <div class="chart-info">
+            <span>${cat}</span>
+            <span>${amt.toLocaleString('ar-DZ')} دج (${percentage}%)</span>
+          </div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: ${percentage}%"></div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
   }
 
   function load() {
-    const saved = localStorage.getItem('mizania_v3_ai');
+    const saved = localStorage.getItem('mizania_v4_1');
     if (saved) state = JSON.parse(saved);
+    if (!state.wordWeights) state.wordWeights = {};
     document.getElementById('dateInput').valueAsDate = new Date();
     render();
-    
-    const savedUrl = localStorage.getItem('scriptUrl');
-    if (!savedUrl) {
+    if (!localStorage.getItem('scriptUrl')) {
       document.getElementById('setupScreen').style.display = 'flex';
     } else {
       sendOfflineQueue();
@@ -260,76 +345,38 @@
     }
   }
 
-  function save() { localStorage.setItem('mizania_v3_ai', JSON.stringify(state)); }
+  function save() { localStorage.setItem('mizania_v4_1', JSON.stringify(state)); }
 
   function sendDataToSheets(amount, description, type, category) {
     const url = localStorage.getItem('scriptUrl');
     if (!url) return;
-
     const payload = { amount, description, type, category };
-
-    if (!navigator.onLine) {
-      saveToOfflineQueue(payload);
-      updateStatusNotification(true);
-      return;
-    }
+    if (!navigator.onLine) { saveToOfflineQueue(payload); return; }
 
     fetch(url, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    }).catch(e => {
-      saveToOfflineQueue(payload);
-      updateStatusNotification(true);
-    });
+    }).catch(() => saveToOfflineQueue(payload));
   }
 
   function saveToOfflineQueue(payload) {
-    let queue = JSON.parse(localStorage.getItem('mizania_ai_queue')) || [];
+    let queue = JSON.parse(localStorage.getItem('mizania_v4_1_queue')) || [];
     queue.push(payload);
-    localStorage.setItem('mizania_ai_queue', JSON.stringify(queue));
+    localStorage.setItem('mizania_v4_1_queue', JSON.stringify(queue));
   }
 
   function sendOfflineQueue() {
     if (!navigator.onLine) return;
     const url = localStorage.getItem('scriptUrl');
-    if (!url) return;
-
-    let queue = JSON.parse(localStorage.getItem('mizania_ai_queue')) || [];
+    let queue = JSON.parse(localStorage.getItem('mizania_v4_1_queue')) || [];
     if (queue.length === 0) return;
 
-    document.getElementById('statusText').textContent = '⏳ جاري مزامنة الحركات السابقة...';
-
-    let promises = queue.map(payload => {
-      return fetch(url, {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    });
-
-    Promise.all(promises)
-      .then(() => {
-        localStorage.removeItem('mizania_ai_queue');
-        updateStatusNotification(false);
-        alert('تمت مزامنة كافة العمليات المعلقة بنجاح! 🎉');
-      })
-      .catch(err => console.error(err));
-  }
-
-  function updateStatusNotification(isOffline) {
-    const txt = document.getElementById('statusText');
-    if (isOffline) {
-      txt.textContent = '⚠️ تعمل أوفلاين حالياً (الحفظ محلي)';
-      txt.style.color = 'var(--yellow)';
-    } else {
-      txt.textContent = 'تتبع تلقائي مدعوم بالذكاء الاصطناعي المحلي';
-      txt.style.color = 'var(--muted)';
-    }
+    let promises = queue.map(payload => fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }));
+    Promise.all(promises).then(() => localStorage.removeItem('mizania_v4_1_queue'));
   }
 
   window.addEventListener('online', sendOfflineQueue);
-  window.addEventListener('offline', () => updateStatusNotification(true));
 
   function setType(t) {
     state.currentType = t;
@@ -339,107 +386,91 @@
 
   function addTransaction() {
     const desc   = document.getElementById('descInput').value.trim();
-    const category = document.getElementById('categorySelect').value;
     const amount = parseFloat(document.getElementById('amountInput').value);
     const wallet = document.getElementById('walletSelect').value;
     const date   = document.getElementById('dateInput').value;
-    if (!desc || isNaN(amount) || amount <= 0) { alert('يرجى ملأ حقول الوصف والمبلغ بشكل صحيح'); return; }
+    if (!desc || isNaN(amount) || amount <= 0) { alert('يرجى ملأ البيانات بشكل صحيح'); return; }
 
     const sign = state.currentType === 'expense' ? -1 : 1;
 
     if (editingTxId !== null) {
+      // هنا يحدث التعديل اليدوي الصريح البشري: نقوم بإنتاج وتحديث الأوزان الذكية
       const txIndex = state.transactions.findIndex(t => t.id === editingTxId);
       if (txIndex !== -1) {
         const oldTx = state.transactions[txIndex];
         const oldSign = oldTx.type === 'expense' ? -1 : 1;
         state[oldTx.wallet] -= oldSign * oldTx.amount;
 
-        state.transactions[txIndex] = { id: editingTxId, desc, amount, wallet, date, type: state.currentType, category };
-        state[wallet] += sign * amount;
+        // إعادة تصنيف مبني على التحديث البشري أو تثبيته كـ "الأجر" إذا كان دخلاً
+        const dynamicCat = state.currentType === 'income' ? 'الأجر' : predictCategoryStatistical(desc);
 
-        sendDataToSheets(sign * amount, `تعديل: ${desc}`, `${wallet === 'cash' ? 'كاش' : 'CCP'} (${state.currentType === 'income' ? 'دخل' : 'مصروف'})`, category);
+        state.transactions[txIndex] = { id: editingTxId, desc, amount, wallet, date, type: state.currentType, category: dynamicCat };
+        state[wallet] += sign * amount;
+        
+        // محرك التعلم يتغذى الآن فقط من قرار التعديل البشري 
+        updateWeightsSilent(desc, dynamicCat);
+        
+        sendDataToSheets(sign * amount, desc, wallet === 'cash' ? 'كاش' : 'CCP', dynamicCat);
       }
       editingTxId = null;
-      const submitBtn = document.getElementById('btnSubmitForm');
-      submitBtn.textContent = '✅ إضافة الحركية';
+      document.getElementById('btnSubmitForm').textContent = '✅ إضافة الحركية';
       document.getElementById('formActionTitle').textContent = 'إضافة حركة جديدة';
     } else {
+      // عند الإضافة لأول مرة: نستخدم التنبؤ الإحصائي الصامت النظيف دون حفظ وزن جديد لمنع الحلقات الخاطئة
+      const computedCategory = state.currentType === 'income' ? 'الأجر' : predictCategoryStatistical(desc);
       state[wallet] += sign * amount;
-      state.transactions.unshift({ id: Date.now(), desc, amount, wallet, date, type: state.currentType, category });
-      
-      const walletLabel = wallet === 'cash' ? 'كاش' : 'CCP';
-      const typeLabel   = state.currentType === 'income' ? 'دخل' : 'مصروف';
-      sendDataToSheets(sign * amount, desc, walletLabel + ' (' + typeLabel + ')', category);
+      state.transactions.unshift({ id: Date.now(), desc, amount, wallet, date, type: state.currentType, category: computedCategory });
+      sendDataToSheets(sign * amount, desc, wallet === 'cash' ? 'كاش' : 'CCP', computedCategory);
     }
 
     save(); render();
     document.getElementById('descInput').value = '';
     document.getElementById('amountInput').value = '';
-    document.getElementById('categorySelect').value = '🔄 أخرى';
-    document.getElementById('dateInput').valueAsDate = new Date();
   }
 
   function editTransaction(id) {
     const tx = state.transactions.find(t => t.id === id);
     if (!tx) return;
-
     document.getElementById('descInput').value = tx.desc;
-    document.getElementById('categorySelect').value = tx.category || '🔄 أخرى';
     document.getElementById('amountInput').value = tx.amount;
     document.getElementById('walletSelect').value = tx.wallet;
     document.getElementById('dateInput').value = tx.date;
     setType(tx.type);
-
-    const submitBtn = document.getElementById('btnSubmitForm');
-    submitBtn.textContent = '💾 حفظ التعديل المالي';
-    document.getElementById('formActionTitle').textContent = 'تعديل الحركة الحالية ✏️';
-    
+    document.getElementById('btnSubmitForm').textContent = '💾 حفظ التعديل والتعلم';
+    document.getElementById('formActionTitle').textContent = 'تعديل الحركة (سيتم تعلّم التصحيح تلقائياً) ✏️';
     editingTxId = id;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // الحذف والمسح والـ Render مستقرة وتعمل بامتياز
   function deleteTransaction(id) {
-    if(!confirm('هل أنت متأكد من رغبتك في حذف هذه الحركة؟')) return;
+    if(!confirm('هل تريد حذف هذه الحركة؟')) return;
     const tx = state.transactions.find(t => t.id === id);
     if (!tx) return;
-    const sign = tx.type === 'expense' ? 1 : -1;
-    state[tx.wallet] += sign * tx.amount;
+    state[tx.wallet] += (tx.type === 'expense' ? 1 : -1) * tx.amount;
     state.transactions = state.transactions.filter(t => t.id !== id);
     save(); render();
-    sendDataToSheets(-sign * tx.amount, 'حذف حركة: ' + tx.desc, tx.wallet === 'cash' ? 'كاش' : 'CCP', tx.category);
   }
 
   function clearAll() {
-    if (!confirm('تنبيه: مسح كل الحركات؟ الأرصدة الحالية ستبقى ثابتة.')) return;
-    state.transactions = [];
-    save(); render();
+    if (!confirm('مسح كل الحركات؟')) return;
+    state.transactions = []; save(); render();
   }
 
   let editingWallet = null;
   function openModal(w) {
     editingWallet = w;
-    document.getElementById('modalTitle').textContent = w === 'cash' ? 'تعديل رصيد الكاش يدويّاً' : 'تعديل رصيد CCP يدويّاً';
+    document.getElementById('modalTitle').textContent = w === 'cash' ? 'تعديل رصيد الكاش' : 'تعديل رصيد CCP';
     document.getElementById('modalInput').value = state[w];
     document.getElementById('modalOverlay').classList.add('open');
-    document.getElementById('modalInput').focus();
   }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); editingWallet = null; }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
   function saveBalance() {
     const val = parseFloat(document.getElementById('modalInput').value);
-    if (isNaN(val)) return;
-    const diff = val - state[editingWallet];
-    state[editingWallet] = val;
-    save(); render(); closeModal();
-    sendDataToSheets(diff, 'تعديل رصيد يدوي مباشر', editingWallet === 'cash' ? 'كاش' : 'CCP', '🔄 تعديل رصيد');
+    if (!isNaN(val)) { state[editingWallet] = val; save(); render(); closeModal(); }
   }
 
   function render() {
-    const fmt = n => {
-      const parts = n.toString().split('.');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-      return parts.join('.');
-    };
-
+    const fmt = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     document.getElementById('cashBal').textContent  = fmt(state.cash);
     document.getElementById('ccpBal').textContent   = fmt(state.ccp);
     document.getElementById('totalBal').textContent = fmt(state.cash + state.ccp);
@@ -451,29 +482,24 @@
     }
     
     list.innerHTML = state.transactions.map(tx => {
-      const sign   = tx.type === 'income' ? '+' : '-';
-      const cls    = tx.type;
+      const sign = tx.type === 'income' ? '+' : '-';
       const wallet = tx.wallet === 'cash' ? '💵 كاش' : '🏦 CCP';
-      const cat    = tx.category || '🔄 أخرى';
-      const d      = tx.date ? new Date(tx.date).toLocaleDateString('ar-DZ') : '';
+      const catLabel = tx.category ? ` · 🏷️ ${tx.category}` : '';
       return `<div class="tx-item">
         <div class="tx-left">
           <div class="tx-desc">${tx.desc}</div>
-          <div class="tx-meta">${wallet} · ${cat} · ${d}</div>
+          <div class="tx-meta">${wallet}${catLabel}</div>
         </div>
         <div class="tx-right">
-          <div class="tx-amount ${cls}">${sign}${fmt(tx.amount)} دج</div>
-          <button class="tx-btn edit" onclick="editTransaction(${tx.id})">✏️</button>
-          <button class="tx-btn del" onclick="deleteTransaction(${tx.id})">🗑</button>
+          <div class="tx-amount ${tx.type}">${sign}${fmt(tx.amount)} دج</div>
+          <button class="tx-btn" onclick="editTransaction(${tx.id})">✏️</button>
+          <button class="tx-btn" onclick="deleteTransaction(${tx.id})">🗑</button>
         </div>
       </div>`;
     }).join('');
   }
 
-  document.getElementById('modalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
-
+  state.currentType = 'expense';
   load();
 </script>
 </body>
