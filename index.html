@@ -311,7 +311,7 @@
 
   function render() {
     // تم إلغاء التنسيق المحلي لـ ar-DZ بناء على طلبك لتعود الأرقام مصمتة وبدون فواصل
-    const fmt = n => n; 
+    const fmt = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); 
 
     document.getElementById('cashBal').textContent  = fmt(state.cash);
     document.getElementById('ccpBal').textContent   = fmt(state.ccp);
