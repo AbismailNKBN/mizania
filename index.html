@@ -258,7 +258,6 @@
 <h1>💰 ميزانيتي</h1>
 <p class="subtitle">تتبع بسيط — كاش + CCP</p>
 
-<!-- Balances -->
 <div class="balances">
   <div class="bal-card cash">
     <button class="edit-bal" onclick="openModal('cash')">✏️</button>
@@ -279,7 +278,6 @@
   <div class="tv"><span id="totalBal">0</span> دج</div>
 </div>
 
-<!-- Form -->
 <div class="form-card">
   <div class="form-title">إضافة حركة</div>
   <div class="type-toggle">
@@ -300,7 +298,6 @@
   <button class="submit-btn" onclick="addTransaction()">✅ إضافة</button>
 </div>
 
-<!-- List -->
 <div class="section-header">
   <div class="section-title">📋 الحركات</div>
   <button class="clear-btn" onclick="clearAll()">مسح الكل</button>
@@ -309,7 +306,6 @@
   <div class="empty-msg">لا توجد حركات بعد — أضف أول واحدة 👆</div>
 </div>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h3 id="modalTitle">تعديل الرصيد</h3>
@@ -322,6 +318,9 @@
 </div>
 
 <script>
+  // ── رابط المزامنة مع جوجل شيت ──
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8PWcdtpH53j0QN22TDEgogElO_z9UzKAjFFoiXw8wa8vpDzGB47m_v5JOy4rQAZm1/exec';
+
   // ── State ──
   let state = {
     cash: 0,
@@ -340,6 +339,23 @@
   }
 
   function save() { localStorage.setItem('mizania_v2', JSON.stringify(state)); }
+
+  // ── دالة إرسال البيانات لجوجل شيت خلف الكواليس ──
+  function sendDataToSheets(amount, description, type) {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: amount,
+        description: description,
+        type: type
+      })
+    })
+    .catch(error => console.error('خطأ في مزامنة السحابة:', error));
+  }
 
   // ── Type toggle ──
   function setType(t) {
@@ -371,6 +387,12 @@
 
     save();
     render();
+
+    // إرسال للـ Google Sheets تلقائياً
+    const walletLabel = wallet === 'cash' ? 'كاش' : 'CCP';
+    const typeLabel = state.currentType === 'income' ? 'دخل' : 'مصروف';
+    sendDataToSheets(sign * amount, desc, walletLabel + ' (' + typeLabel + ')');
+
     document.getElementById('descInput').value = '';
     document.getElementById('amountInput').value = '';
     document.getElementById('dateInput').valueAsDate = new Date();
@@ -385,6 +407,9 @@
     state.transactions = state.transactions.filter(t => t.id !== id);
     save();
     render();
+
+    // توثيق الحذف في السحابة
+    sendDataToSheets(-sign * tx.amount, 'تراجع وحذف: ' + tx.desc, tx.wallet === 'cash' ? 'كاش' : 'CCP');
   }
 
   // ── Clear ──
@@ -393,6 +418,7 @@
     state.transactions = [];
     save();
     render();
+    sendDataToSheets(0, 'تم تصفير قائمة الحركات محلياً من الهاتف', 'تنبيه');
   }
 
   // ── Modal ──
@@ -411,8 +437,14 @@
   function saveBalance() {
     const val = parseFloat(document.getElementById('modalInput').value);
     if (isNaN(val)) return;
+    const oldVal = state[editingWallet];
     state[editingWallet] = val;
     save(); render(); closeModal();
+
+    // إرسال الحركة التصحيحية للجدول
+    const diff = val - oldVal;
+    const walletLabel = editingWallet === 'cash' ? 'كاش' : 'CCP';
+    sendDataToSheets(diff, 'تعديل رصيد يدوي مباشر', walletLabel);
   }
 
   // ── Render ──
