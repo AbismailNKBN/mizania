@@ -1,731 +1,703 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ميزانيتي الذكي v5.5 - النسخة المستقرة</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f1117">
+<title>ميزانيتي — v6 Personal Ledger</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600&display=swap');
+:root {
+  --bg: #05070f; --surface: #0a0d1a; --card: #101426; --border: #1a223d;
+  --accent: #2563eb; --gold: #c9a84c; --green: #10b981; --red: #ef4444;
+  --text: #f1f5f9; --muted: #5e708e; --subtle: #283556; --r: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+body { background: var(--bg); color: var(--text); padding-bottom: 60px; font-size: 14px; }
+.safe-wrapper { max-width: 600px; margin: 0 auto; padding: 20px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.brand h1 { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+.brand p { font-size: 0.7rem; color: var(--gold); letter-spacing: 1px; font-family: 'Inter', sans-serif; }
+.status-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.dot.online { background: var(--green); }
+.dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-  :root {
-    --bg: #0f1117; --surface: #161a26; --card: #1f2438; --border: #373f5e;
-    --accent: #3b82f6; --green: #10b981; --red: #ef4444; --yellow: #f59e0b;
-    --purple: #8b5cf6; --text: #ffffff; --muted: #a3b1cc; --radius: 16px;
-  }
+.hero-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; margin-bottom: 20px; text-align: center; }
+.hero-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.hero-amount { font-size: 2.4rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+.wallets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.wallet-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.wallet-box h3 { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+.wallet-val { font-size: 1.3rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+.wallet-box.cash .wallet-val { color: var(--gold); }
+.wallet-box.ccp .wallet-val { color: #60a5fa; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 80px; -webkit-tap-highlight-color: transparent; }
-  .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .menu-btn { background: none; border: none; color: var(--text); font-size: 1.8rem; cursor: pointer; padding: 4px 8px; }
-  h1 { font-size: 1.6rem; font-weight: 900; }
-  .subtitle { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
+.form-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 20px; }
+.type-selector { display: flex; gap: 6px; background: var(--surface); padding: 4px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px; }
+.type-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--muted); font-weight: 600; cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+.type-btn.active { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 0.75rem; color: var(--muted); }
+input, select { background: var(--surface); border: 1px solid var(--border); padding: 10px 14px; color: var(--text); border-radius: 8px; outline: none; font-size: 0.9rem; }
+input:focus, select:focus { border-color: var(--accent); }
+.btn-block { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+.btn-block:active { opacity: 0.9; }
+.tools-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.btn-sub { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; text-align: center; }
+.btn-sub:hover { border-color: var(--subtle); color: var(--text); }
 
-  .balances { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-  .bal-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; position: relative; }
-  .bal-card .label { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
-  .bal-card .amount { font-size: 1.5rem; font-weight: 900; direction: ltr; display: inline-block; }
-  .bal-card.cash .amount { color: var(--yellow); }
-  .bal-card.ccp .amount  { color: var(--accent); }
-  .bal-card .reconcile-btn { position: absolute; top: 10px; left: 10px; background: var(--border); border: none; color: var(--text); cursor: pointer; font-size: 0.8rem; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+/* واجهة إعدادات المزامنة المضافة البسيطة */
+.sync-settings-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 20px; display: flex; gap: 8px; align-items: flex-end; }
+.sync-settings-box .field { flex: 1; }
 
-  .total-card { background: linear-gradient(135deg, #172544 0%, #1f2438 100%); border: 2px solid var(--accent); border-radius: var(--radius); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .total-card .tl { font-size: 0.95rem; color: var(--muted); font-weight: 600; }
-  .total-card .tv { font-size: 1.6rem; font-weight: 900; color: #60a5fa; direction: ltr; display: inline-block; }
+.ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.ledger-header h2 { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; }
+.tx-list { display: flex; flex-direction: column; gap: 8px; }
+.tx-row { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+.tx-info { display: flex; flex-direction: column; gap: 2px; }
+.tx-desc { font-weight: 600; font-size: 0.9rem; color: var(--text); }
+.tx-meta { font-size: 0.7rem; color: var(--muted); font-family: 'Inter', sans-serif; }
+.tx-amount-area { display: flex; align-items: center; gap: 12px; }
+.tx-amt { font-weight: 700; font-family: 'Inter', sans-serif; }
+.tx-amt.expense { color: var(--red); }
+.tx-amt.income { color: var(--green); }
+.tx-amt.transfer { color: #818cf8; }
+.tx-amt.reconciliation { color: #e2e8f0; }
+.action-icon { background: none; border: none; color: var(--subtle); cursor: pointer; font-size: 1rem; padding: 4px; }
+.action-icon:hover { color: var(--red); }
+.load-more { text-align: center; margin-top: 12px; }
 
-  .harvest-card { background: linear-gradient(135deg, #064e3b 0%, #111827 100%); border: 2px solid var(--green); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; display: none; }
-  .harvest-title { font-size: 0.95rem; font-weight: 900; color: #6ee7b7; margin-bottom: 10px; display: flex; justify-content: space-between; }
-  .harvest-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 0.8rem; text-align: center; }
-  .harvest-item { background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
-
-  .budget-summary { background: #1e1e2f; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 24px; }
-  .budget-summary h4 { font-size: 0.9rem; margin-bottom: 10px; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
-  .budget-edit-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; cursor: pointer; }
-  .budget-bar-container { width: 100%; height: 6px; background: #2d2d44; border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
-  .budget-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.3s; }
-
-  .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-  .filter-bar select, .filter-bar input { padding: 8px 12px; font-size: 0.85rem; border-radius: 8px; height: 38px; }
-
-  .form-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 28px; }
-  .form-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
-
-  .type-toggle { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-  .type-btn { padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
-  .type-btn.active-expense { background: #4c1d1d; border-color: var(--red); color: #fca5a5; }
-  .type-btn.active-income  { background: #064e3b; border-color: var(--green); color: #6ee7b7; }
-  .type-btn.active-transfer { background: #3b0764; border-color: var(--purple); color: #d8b4fe; }
-
-  .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
-  .form-row.quad { grid-template-columns: 1.2fr 1fr 1.2fr; display: grid; }
-  .form-row.transfer-flow { display: none; grid-template-columns: 1fr 12px 1fr; align-items: center; text-align: center; font-weight: bold; }
-
-  input, select { width: 100%; background: var(--card); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 1rem; padding: 14px 16px; outline: none; }
-  input:focus, select:focus { border-color: var(--accent); background: #242b42; }
-
-  .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-  .sync-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-  .export-btn { padding: 12px; background: #1e293b; color: #38bdf8; border: 2px dashed #0284c7; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-
-  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .section-title { font-size: 1rem; font-weight: 700; }
-  .clear-btn { background: none; border: 2px solid var(--border); color: var(--muted); font-family: 'Cairo', sans-serif; font-size: 0.85rem; padding: 6px 14px; border-radius: 10px; cursor: pointer; }
-
-  .tx-list { display: flex; flex-direction: column; gap: 10px; }
-  .tx-item { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-  .tx-left { display: flex; flex-direction: column; gap: 4px; }
-  .tx-desc { font-size: 1rem; font-weight: 700; }
-  .tx-meta { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
-  .tx-right { display: flex; align-items: center; gap: 12px; }
-  .tx-amount { font-size: 1.1rem; font-weight: 700; direction: ltr; }
-  .tx-amount.income { color: #34d399; }
-  .tx-amount.expense { color: #f87171; }
-  .tx-amount.transfer { color: #c084fc; }
-  .tx-btn { background: var(--border); border: none; color: var(--text); cursor: pointer; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-
-  .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100vh; background: var(--surface); border-left: 2px solid var(--border); z-index: 999; padding: 30px 20px; transition: right 0.3s ease; overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
-  .sidebar.open { right: 0; }
-  .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
-  .close-sidebar { background: none; border: none; color: var(--red); font-size: 1.5rem; cursor: pointer; }
-  .analytics-title { font-size: 1rem; font-weight: 900; margin: 20px 0 10px; color: var(--accent); border-right: 4px solid var(--accent); padding-right: 8px; }
-  .chart-container { display: flex; flex-direction: column; gap: 12px; }
-  .chart-row { background: var(--card); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
-  .chart-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
-  .chart-bar-bg { width: 100%; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .chart-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width 0.5s ease; }
-  .top-desc-item { display: flex; justify-content: space-between; background: #1a1f33; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; }
-
-  .settings-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 8px; }
-  .settings-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
-  .settings-row input { padding: 10px 14px; font-size: 0.95rem; }
-  .settings-save-btn { padding: 10px 16px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
-
-  .setup-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 40px 24px; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; width: 90%; max-width: 340px; }
-  .modal-btns { display: flex; gap: 12px; margin-top: 20px; }
-  .modal-btns button { flex: 1; padding: 14px; border-radius: 12px; border: none; font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
-  .empty-msg { text-align: center; color: var(--muted); padding: 20px 0; font-size: 0.9rem; }
+.preview-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.preview-modal.open { display: flex; }
+.modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; width: min(420px, 92vw); }
+.modal-content h3 { font-size: 1rem; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.preview-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.metric-tile { background: var(--surface); padding: 10px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+.metric-tile p { font-size: 0.7rem; color: var(--muted); }
+.metric-tile span { font-size: 1.1rem; font-weight: 700; font-family: 'Inter'; }
 </style>
 </head>
 <body>
 
-<div class="setup-screen" id="setupScreen">
-  <h2>أهلاً بك في ميزانيتي الذكي v5.5 🚀</h2>
-  <p style="color:var(--muted);margin-bottom:20px;line-height:1.6;">الرجاء إدخال رابط السكربت السحابي المؤمن لربط السجلات والنسخ الاحتياطي:</p>
-  <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" style="margin-bottom: 20px;" />
-  <button class="submit-btn" onclick="saveScriptUrl()">🚀 تفعيل قاعدة البيانات والتوصيل السحابي</button>
-</div>
-
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <h2>📊 التحليل والإعدادات</h2>
-    <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
-  </div>
-
-  <div class="analytics-title">⚙️ إعدادات M1 ميزانية</div>
-  <div class="settings-card">
-    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:4px;">سقف الإنفاق الشهري الحالي:</p>
-    <p id="currentBudgetDisplay" style="font-size:1.2rem;font-weight:900;color:var(--yellow);">0 دج</p>
-    <div class="settings-row">
-      <input type="number" id="budgetLimitInput" placeholder="أدخل السقف الجديد..." min="0" />
-      <button class="settings-save-btn" onclick="saveBudgetLimit()">حفظ</button>
+<div class="safe-wrapper">
+  <div class="header">
+    <div class="brand">
+      <h1>ميزانيتي</h1>
+      <p>PERSONAL LEDGER v6.0</p>
+    </div>
+    <div class="status-badge">
+      <div class="dot" id="syncDot"></div>
+      <span id="syncStatusText">لوكال</span>
     </div>
   </div>
 
-  <div class="analytics-title">🔍 هيكل النفقات الحالي</div>
-  <div class="chart-container" id="analyticsContainer"></div>
-
-  <div class="analytics-title">🚨 أكبر مستنزفات السيولة</div>
-  <div id="topDescriptionsContainer"></div>
-</div>
-
-<div class="app-container">
-  <div class="app-header">
-    <h1>💰 ميزانيتي الذكي</h1>
-    <button class="menu-btn" onclick="toggleSidebar()">📊</button>
-  </div>
-  <p class="subtitle">محرك IndexedDB فائق السرعة — مزامنة معالجة وقيود سحابة Google</p>
-
-  <div class="harvest-card" id="harvestCard">
-    <div class="harvest-title">
-      <span id="harvestPeriodTitle">📋 حصاد واستنتاج الشهر الماضي</span>
-      <button style="background:none; border:none; color:#fca5a5; cursor:pointer;" onclick="document.getElementById('harvestCard').style.display='none'">✕</button>
-    </div>
-    <div class="harvest-grid">
-      <div class="harvest-item"><p style="color:var(--muted);">الدخل الكلي</p><strong id="harvestIncome" style="color:#6ee7b7;">0 دج</strong></div>
-      <div class="harvest-item"><p style="color:var(--muted);">المصاريف</p><strong id="harvestExpense" style="color:#fca5a5;">0 دج</strong></div>
-      <div class="harvest-item"><p style="color:var(--muted);">صافي الادخار</p><strong id="harvestSavings" style="color:#60a5fa;">0 دج</strong></div>
-    </div>
-    <p id="harvestInsights" style="font-size: 0.75rem; color:#a7f3d0; margin-top: 8px; text-align: center;"></p>
+  <div class="hero-card">
+    <div class="hero-label">صافي السيولة النقدية المشتقة</div>
+    <div class="hero-amount" id="netWorthDisplay">0.00 دج</div>
   </div>
 
-  <div class="balances">
-    <div class="bal-card cash">
-      <button class="reconcile-btn" onclick="openReconciliationModal('cash')">⚖️</button>
-      <div class="label">كاش في الجيب</div>
-      <div class="amount" id="cashBal">0</div>
-      <div class="currency">دج</div>
+  <div class="wallets-grid">
+    <div class="wallet-box cash">
+      <h3>صندوق الكاش اليدوي</h3>
+      <div class="wallet-val" id="cashDisplay">0.00 دج</div>
     </div>
-    <div class="bal-card ccp">
-      <button class="reconcile-btn" onclick="openReconciliationModal('ccp')">⚖️</button>
-      <div class="label">حساب CCP</div>
-      <div class="amount" id="ccpBal">0</div>
-      <div class="currency">دج</div>
+    <div class="wallet-box ccp">
+      <h3>الحساب البريدي CCP</h3>
+      <div class="wallet-val" id="ccpDisplay">0.00 دج</div>
     </div>
   </div>
 
-  <div class="total-card">
-    <div class="tl">صافي الثروة النقدية الحالية</div>
-    <div class="tv"><span id="totalBal">0</span> دج</div>
+  <div class="sync-settings-box">
+    <div class="field">
+      <label style="font-size: 0.75rem; color: var(--muted);">رابط خادم المزامنة (Google Apps Script URL)</label>
+      <input type="text" id="syncServerUrl" placeholder="https://script.google.com/macros/s/.../exec" style="padding: 6px 10px; font-size: 0.8rem; width: 100%;"/>
+    </div>
+    <button class="btn-sub" style="padding: 7px 14px;" onclick="saveSyncUrl()">حفظ</button>
   </div>
 
-  <div class="budget-summary">
-    <h4>
-      <span>📈 سقف الإنفاق الشهري الحالي</span>
-      <span style="display:flex;align-items:center;gap:8px;">
-        <span id="budgetPercentText">0%</span>
-        <button class="budget-edit-btn" onclick="toggleSidebar()">تعديل ⚙️</button>
-      </span>
-    </h4>
-    <div class="budget-bar-container"><div class="budget-bar-fill" id="budgetBarFill"></div></div>
-    <p id="budgetDetailText" style="font-size:0.75rem;color:var(--muted);margin-top:4px;"></p>
-  </div>
+  <div class="form-box">
+    <div class="type-selector">
+      <button class="type-btn active" onclick="setTxType('expense', this)">مصروف</button>
+      <button class="type-btn" onclick="setTxType('income', this)">دخل حركة</button>
+      <button class="type-btn" onclick="setTxType('transfer', this)">تحويل داخلي</button>
+      <button class="type-btn" onclick="setTxType('reconciliation', this)">جرد تسوية</button>
+    </div>
 
-  <div class="form-card">
-    <div class="form-title" id="formActionTitle">إدخال حركية مالية</div>
-    <div class="type-toggle">
-      <button class="type-btn active-expense" id="btnExpense" onclick="setType('expense')">🔴 مصروف</button>
-      <button class="type-btn" id="btnIncome"  onclick="setType('income')">🟢 دخل</button>
-      <button class="type-btn" id="btnTransfer" onclick="setType('transfer')">🔄 تحويل</button>
+    <div class="field" id="descField" style="margin-bottom:12px;">
+      <label>بيان القيد المالي</label>
+      <input type="text" id="txDesc" placeholder="مثال: شراء دقيق، سحب مرتب..."/>
     </div>
-    <div class="form-row" id="descRow">
-      <input type="text" id="descInput" placeholder="ماذا صرفت أو استلمت؟" />
+
+    <div class="input-grid">
+      <div class="field">
+        <label>المبلغ (دينار جزائري)</label>
+        <input type="text" id="txAmount" placeholder="0.00"/>
+      </div>
+      <div class="field" id="walletField">
+        <label>المستودع المالي</label>
+        <select id="txWallet">
+          <option value="cash">كاش</option>
+          <option value="ccp">CCP</option>
+        </select>
+      </div>
+      <div class="field" id="toWalletField" style="display:none;">
+        <label>المستودع المستهدف</label>
+        <select id="txToWallet">
+          <option value="ccp">CCP</option>
+          <option value="cash">كاش</option>
+        </select>
+      </div>
     </div>
-    <div class="form-row transfer-flow" id="transferFlowRow">
-      <select id="walletFromSelect"><option value="ccp">CCP</option><option value="cash">كاش</option></select>
-      <div>⬅️</div>
-      <select id="walletToSelect"><option value="cash">كاش</option><option value="ccp">CCP</option></select>
+
+    <div class="field" style="margin-bottom:12px;">
+      <label>التاريخ والوقت المحاسبي</label>
+      <input type="datetime-local" id="txDate"/>
     </div>
-    <div class="form-row quad" id="standardInputsRow">
-      <input type="number" id="amountInput" placeholder="المبلغ" min="0" />
-      <select id="walletSelect"><option value="cash">كاش</option><option value="ccp">CCP</option></select>
-      <input type="date" id="dateInput" />
-    </div>
-    <button class="submit-btn" id="btnSubmitForm" onclick="executeAction()">✅ تثبيت العملية</button>
+
+    <button class="btn-block" onclick="handleFormSubmit()">قيد الحركة في السجل المركزي</button>
     
-    <div class="sync-actions-row">
-      <button class="export-btn" onclick="exportToCSV()">📥 تصدير CSV</button>
-      <button class="export-btn" style="border-color:var(--green); color:#34d399;" onclick="triggerManualCloudBackup()">☁️ نسخ احتياطي كامل</button>
+    <div class="tools-row">
+      <button class="btn-sub" onclick="exportEngineBackup()">تصدير الآمن (JSON)</button>
+      <button class="btn-sub" onclick="document.getElementById('importFile').click()">استيراد آمن</button>
+      <input type="file" id="importFile" style="display:none;" accept=".json" onchange="processImportFile(this)"/>
     </div>
   </div>
 
-  <div class="section-header">
-    <div class="section-title">📋 السجل المالي</div>
-    <button class="clear-btn" onclick="clearAll()">مسح الكل</button>
+  <div class="ledger-header">
+    <h2>دفتر العمليات المحاسبي التدقيقي (Audit Trail)</h2>
+    <button class="btn-sub" style="padding:2px 8px; font-size:0.7rem;" onclick="triggerPurgeAll()">تصفير شامل</button>
   </div>
-
-  <div class="filter-bar">
-    <input type="text" id="searchFilter" placeholder="بحث بالوصف..." oninput="render()" />
-    <select id="timeFilter" onchange="render()">
-      <option value="all">كل الأوقات</option>
-      <option value="this_month">هذا الشهر</option>
-      <option value="last_month">الشهر الماضي</option>
-    </select>
-    <select id="typeFilter" onchange="render()">
-      <option value="all">كل الأنواع</option>
-      <option value="expense">مصاريف</option>
-      <option value="income">دخل</option>
-      <option value="transfer">تحويلات</option>
-    </select>
-    <select id="walletFilter" onchange="render()">
-      <option value="all">كل المحافظ</option>
-      <option value="cash">كاش</option>
-      <option value="ccp">CCP</option>
-    </select>
+  
+  <div class="tx-list" id="ledgerContainer"></div>
+  <div class="load-more" id="loadMoreBox" style="display:none;">
+    <button class="btn-sub" style="width:100%;" onclick="loadMoreTx()">تحميل الحركات الأقدم</button>
   </div>
-
-  <div class="tx-list" id="txList"></div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3 id="modalTitle">جرد وتسوية المحفظة</h3>
-    <p style="font-size:0.8rem;color:var(--muted);margin:6px 0 14px;" id="modalExpectedText"></p>
-    <input type="number" id="modalInput" placeholder="كم يوجد فعلياً؟" />
-    <div class="modal-btns">
-      <button style="background:var(--border);color:var(--text);" onclick="closeModal()">إلغاء</button>
-      <button style="background:var(--accent);color:#fff;" onclick="saveReconciliation()">⚖️ تسوية</button>
+<div class="preview-modal" id="previewModal">
+  <div class="modal-content">
+    <h3>معاينة وتحليل حزمة الاستيراد قبل التثبيت</h3>
+    <div class="preview-metrics">
+      <div class="metric-tile"><p>إجمالي العمليات المعتمدة</p><span id="pTotal">0</span></div>
+      <div class="metric-tile"><p>عمليات مرفوضة/مكررة</p><span id="pDup" style="color:var(--gold);">0</span></div>
+      <div class="metric-tile"><p>تأثير الكاش</p><span id="pCash">0.00</span></div>
+      <div class="metric-tile"><p>تأثير الـ CCP</p><span id="pCcp">0.00</span></div>
+    </div>
+    <div class="tools-row">
+      <button class="btn-sub" style="background:var(--surface)" onclick="closePreviewModal()">إلغاء تماماً</button>
+      <button class="btn-block" style="margin-top:0;" onclick="commitImport()">اعتماد ودمج الدفاتر</button>
     </div>
   </div>
 </div>
 
 <script>
-  let db = null;
-  let state = { cash: 0, ccp: 0, transactions: [], wordWeights: {}, currentType: 'expense' };
-  let editingTxId = null;
+/**
+ * ============================================================================
+ * V6 PERSONAL LEDGER ENGINE - VERIFIED HAND-HELD REVISION
+ * ============================================================================
+ */
 
-  function initIndexedDB(callback) {
-    const request = indexedDB.open("MizaniaDB", 1);
-    request.onupgradeneeded = function(e) {
-      const database = e.target.result;
-      if (!database.objectStoreNames.contains("stateStore")) {
-        database.createObjectStore("stateStore");
-      }
-    };
-    request.onsuccess = function(e) {
-      db = e.target.result;
-      callback();
-    };
-    request.onerror = function() {
-      alert("خطأ في تشغيل قاعدة بيانات المتصفح العميقة IndexedDB.");
-    };
+let ledgerState = {
+  transactions: [],
+  syncQueue: [],
+  settings: { serverUrl: localStorage.getItem('v6_server_url') || '', lastRevision: 0 },
+  projections: { cash: 0, ccp: 0, net: 0 }
+};
+
+let currentType = 'expense';
+let itemsLimit = 20;
+let importCache = null;
+let syncInProgress = false;
+
+const VALID_WALLETS = ['cash', 'ccp'];
+const VALID_TYPES = ['income', 'expense', 'transfer', 'reconciliation'];
+
+// 1. STRICT INTEGER PARSER
+function parseToMinor(inputVal) {
+  if (typeof inputVal === 'number') inputVal = inputVal.toString();
+  if (!inputVal || typeof inputVal !== 'string') return null;
+  
+  const cleaned = inputVal.trim().replace(/,/g, '');
+  const strictRegex = /^\d+(\.\d{1,2})?$/;
+  if (!strictRegex.test(cleaned)) return null;
+  
+  const parts = cleaned.split('.');
+  const dinars = parseInt(parts[0], 10);
+  let cents = 0;
+  if (parts[1]) {
+    cents = parseInt(parts[1].padEnd(2, '0'), 10);
   }
+  
+  if (isNaN(dinars) || isNaN(cents)) return null;
+  return (dinars * 100) + cents;
+}
 
-  function saveToDB() {
-    if (!db) return;
-    const tx = db.transaction("stateStore", "readwrite");
-    const store = tx.objectStore("stateStore");
-    store.put(state, "app_state");
+const toMajor = val => (val / 100).toFixed(2);
+const fmtDzd = val => new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2 }).format(val / 100) + ' دج';
+
+// 2. PROJECTIONS ENGINE WITH HISTORICAL SEQUENCE ORDER
+function computeProjections() {
+  let cash = 0;
+  let ccp = 0;
+
+  const activeTx = [...ledgerState.transactions]
+    .filter(t => !t.deletedAt)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.ledgerOrder - b.ledgerOrder);
+
+  activeTx.forEach(t => {
+    switch (t.type) {
+      case 'income':
+        if (t.fromWalletId === 'cash') cash += t.amountMinor;
+        if (t.fromWalletId === 'ccp') ccp += t.amountMinor;
+        break;
+      case 'expense':
+        if (t.fromWalletId === 'cash') cash -= t.amountMinor;
+        if (t.fromWalletId === 'ccp') ccp -= t.amountMinor;
+        break;
+      case 'transfer':
+        if (t.fromWalletId === 'cash') { cash -= t.amountMinor; ccp += t.amountMinor; }
+        if (t.fromWalletId === 'ccp') { ccp -= t.amountMinor; cash += t.amountMinor; }
+        break;
+      case 'reconciliation':
+        if (t.fromWalletId === 'cash') cash = t.amountMinor;
+        if (t.fromWalletId === 'ccp') ccp = t.amountMinor;
+        break;
+    }
+  });
+
+  ledgerState.projections = { cash, ccp, net: cash + ccp };
+}
+
+// 3. STORAGE LAYER: APPEND-ONLY INDIVIDUAL ROWS
+let dbEngine = null;
+function initStorageEngine(callback) {
+  const request = indexedDB.open('Mizania_Personal_v6', 1);
+  request.onupgradeneeded = e => {
+    const db = e.target.result;
+    db.createObjectStore('transactions', { keyPath: 'id' });
+    db.createObjectStore('syncQueue', { keyPath: 'id' });
+  };
+  request.onsuccess = e => {
+    dbEngine = e.target.result;
+    hydrateStateFromStorage(callback);
+  };
+  request.onerror = () => { alert('فشل فتح قاعدة البيانات المحلية للدفتر!'); };
+}
+
+function persistTx(tx) {
+  if (!dbEngine) return;
+  const store = dbEngine.transaction('transactions', 'readwrite').objectStore('transactions');
+  store.put(tx);
+}
+
+function queueStorePut(queueItem) {
+  if (!dbEngine) return;
+  const store = dbEngine.transaction('syncQueue', 'readwrite').objectStore('syncQueue');
+  store.put(queueItem);
+}
+
+function queueStoreDelete(id) {
+  if (!dbEngine) return;
+  const store = dbEngine.transaction('syncQueue', 'readwrite').objectStore('syncQueue');
+  store.delete(id);
+}
+
+function hydrateStateFromStorage(callback) {
+  const tx = dbEngine.transaction(['transactions', 'syncQueue'], 'readonly');
+  const txStore = tx.objectStore('transactions');
+  const qStore = tx.objectStore('syncQueue');
+
+  const allTx = [];
+  txStore.openCursor().onsuccess = e => {
+    const cursor = e.target.result;
+    if (cursor) { allTx.push(cursor.value); cursor.continue(); }
+    else {
+      ledgerState.transactions = allTx.sort((a,b) => b.date.localeCompare(a.date) || b.ledgerOrder - a.ledgerOrder);
+      const allQ = [];
+      qStore.openCursor().onsuccess = ev => {
+        const cQ = ev.target.result;
+        if (cQ) { allQ.push(cQ.value); cQ.continue(); }
+        else {
+          ledgerState.syncQueue = allQ.sort((a,b) => a.enqueuedAt - b.enqueuedAt);
+          computeProjections();
+          callback();
+        }
+      };
+    }
+  };
+}
+
+// 4. SCHEMA VALIDATION MATRIX (إصلاح 3: إغلاق ثغرة قيمة الصفر)
+function validateTransaction(tx) {
+  if (!tx || typeof tx !== 'object') return false;
+  if (typeof tx.id !== 'string' || tx.id.length < 20) return false;
+  if (!VALID_TYPES.includes(tx.type)) return false;
+  
+  // إلزامية أن يكون المبلغ أكبر قطعيًا من صفر (منع تمرير 0 أو أقل)
+  if (typeof tx.amountMinor !== 'number' || tx.amountMinor <= 0 || isNaN(tx.amountMinor)) return false;
+  if (tx.currency !== 'DZD') return false;
+  if (!VALID_WALLETS.includes(tx.fromWalletId)) return false;
+  
+  // منع التحويل لنفس المحفظة محاسبياً (إصلاح 2)
+  if (tx.type === 'transfer' && (!VALID_WALLETS.includes(tx.toWalletId) || tx.fromWalletId === tx.toWalletId)) return false;
+  
+  if (typeof tx.description !== 'string') return false;
+  if (typeof tx.date !== 'string' || isNaN(Date.parse(tx.date))) return false;
+  if (typeof tx.ledgerOrder !== 'number') return false;
+  if (typeof tx.version !== 'number') return false;
+  return true;
+}
+
+// 5. TRANSACTION MUTATIONS WITH VALIDATIONS (إصلاح 2 و 3 على مستوى النموذج واجهة المدخلات)
+function createLedgerEvent(type, description, amountVal, fromWallet, toWallet, customDate) {
+  const amountMinor = parseToMinor(amountVal);
+  
+  if (amountMinor === null || amountMinor <= 0) { 
+    alert('فشل: يرجى إدخال مبلغ مالي صحيح وأكبر من الصفر.'); 
+    return; 
   }
-
-  function loadFromDB(callback) {
-    if (!db) return;
-    const tx = db.transaction("stateStore", "readonly");
-    const store = tx.objectStore("stateStore");
-    const request = store.get("app_state");
-    request.onsuccess = function() {
-      if (request.result) {
-        state = request.result;
-        if (!state.wordWeights) state.wordWeights = {};
-        if (!state.transactions) state.transactions = [];
-      }
-      callback();
-    };
+  
+  if (type === 'transfer' && fromWallet === toWallet) {
+    alert('فشل: لا يمكن تنفيذ تحويل مالي داخلي لنفس مستودع الحفظ المصدر.');
+    return;
   }
-
-  function getBudgetLimit() { return parseFloat(localStorage.getItem('budgetLimit')) || 35000; }
-  function saveBudgetLimit() {
-    const val = parseFloat(document.getElementById('budgetLimitInput').value);
-    if (isNaN(val) || val <= 0) { alert('أدخل مبلغاً صحيحاً'); return; }
-    localStorage.setItem('budgetLimit', val);
-    document.getElementById('budgetLimitInput').value = '';
-    document.getElementById('currentBudgetDisplay').textContent = fmt(val) + ' دج';
-    render();
-  }
-
-  const categoryAliases = {
-    "أكل وشرب": ["قهوة","مطعم","بيتزا","اكل","حليب","برغر","شاورما","غداء","عشاء","خبز"],
-    "اشتراكات": ["انترنت","internet","fibre","مودم","شحن","فليكسي","يسير","موبيليس","جيزي"],
-    "النقل":    ["تاكسي","حافلة","كوس","بنزين","essence","taxi","ترامواي"],
-    "الصحة":    ["طبيب","دواء","pharmacie","عيادة"],
-    "تسوق":     ["ملابس","لبس","حذاء","شراء","aliexpress"],
-    "الأجر":    ["راتب","شهرية","salaire","prime"]
+  
+  const timestamp = Date.now();
+  
+  const ledgerTx = {
+    id: crypto.randomUUID(),
+    type: type,
+    amountMinor: amountMinor,
+    currency: 'DZD',
+    fromWalletId: fromWallet,
+    toWalletId: type === 'transfer' ? toWallet : null,
+    categoryId: 'default',
+    description: description,
+    date: customDate ? customDate : new Date().toISOString(),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    deletedAt: null,
+    syncStatus: 'pending',
+    ledgerOrder: timestamp,
+    version: 1
   };
 
-  function tokenize(text) { return text.toLowerCase().trim().split(/[\s,.\-_/\\]+/).filter(w => w.length >= 2); }
+  if (!validateTransaction(ledgerTx)) { alert('فشل التحقق الشامل من بنية الحركة!'); return; }
 
-  function predictCategory(desc) {
-    const tokens = tokenize(desc);
-    if (!tokens.length) return "أخرى";
-    let scores = {};
-    tokens.forEach(token => {
-      if (state.wordWeights[token]) {
-        for (const [cat, w] of Object.entries(state.wordWeights[token])) scores[cat] = (scores[cat] || 0) + w;
-      }
-      for (const [cat, aliases] of Object.entries(categoryAliases))
-        aliases.forEach(a => { if (token.includes(a) || a.includes(token)) scores[cat] = (scores[cat] || 0) + 2; });
-    });
-    let best = "أخرى", max = 0;
-    for (const [cat, score] of Object.entries(scores)) if (score > max) { max = score; best = cat; }
-    return best;
-  }
-
-  function learnFromEditExtended(desc, oldCategory, newCategory) {
-    const tokens = tokenize(desc);
-    tokens.forEach(token => {
-      if (!state.wordWeights[token]) state.wordWeights[token] = {};
-      if (oldCategory && state.wordWeights[token][oldCategory]) {
-        state.wordWeights[token][oldCategory] = Math.max(0, state.wordWeights[token][oldCategory] - 1);
-      }
-      state.wordWeights[token][newCategory] = (state.wordWeights[token][newCategory] || 0) + 3;
-
-      let totalWeight = 0;
-      for (const [c, w] of Object.entries(state.wordWeights[token])) {
-        if (w <= 0) delete state.wordWeights[token][c];
-        else totalWeight += w;
-      }
-      if (totalWeight === 0) delete state.wordWeights[token];
-    });
-  }
-
-  function setType(t) {
-    state.currentType = t;
-    ['expense','income','transfer'].forEach(x => {
-      document.getElementById('btn' + x.charAt(0).toUpperCase() + x.slice(1)).className = 'type-btn' + (t === x ? ` active-${x}` : '');
-    });
-    const isTransfer = t === 'transfer';
-    document.getElementById('descRow').style.display = isTransfer ? 'none' : 'flex';
-    document.getElementById('transferFlowRow').style.display = isTransfer ? 'grid' : 'none';
-    document.getElementById('walletSelect').style.display = isTransfer ? 'none' : 'block';
-  }
-
-  function executeAction() { state.currentType === 'transfer' ? executeTransfer() : addTransaction(); }
-
-  function addTransaction() {
-    const desc   = document.getElementById('descInput').value.trim();
-    const amount = parseFloat(document.getElementById('amountInput').value);
-    const wallet = document.getElementById('walletSelect').value;
-    const date   = document.getElementById('dateInput').value;
-    if (!desc || isNaN(amount) || amount <= 0) { alert('يرجى إدخال الوصف والمبلغ بشكل صحيح.'); return; }
-
-    const sign = state.currentType === 'expense' ? -1 : 1;
-
-    if (editingTxId !== null) {
-      const idx = state.transactions.findIndex(t => t.id === editingTxId);
-      if (idx !== -1) {
-        const old = state.transactions[idx];
-        state[old.wallet] -= (old.type === 'expense' ? -1 : 1) * old.amount;
-        const cat = state.currentType === 'income' ? 'الأجر' : predictCategory(desc);
-        
-        learnFromEditExtended(desc, old.category, cat);
-        
-        state.transactions[idx] = { id: editingTxId, desc, amount, wallet, date, type: state.currentType, category: cat };
-        state[wallet] += sign * amount;
-        sendDataToSheets(sign * amount, desc, wallet, cat);
-      }
-      editingTxId = null;
-      document.getElementById('btnSubmitForm').textContent = '✅ تثبيت العملية';
-      document.getElementById('formActionTitle').textContent = 'إدخال حركية مالية';
-    } else {
-      const cat = state.currentType === 'income' ? 'الأجر' : predictCategory(desc);
-      state[wallet] += sign * amount;
-      const secureId = typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : Math.random().toString(36).substring(2);
-      state.transactions.unshift({ id: secureId, desc, amount, wallet, date, type: state.currentType, category: cat });
-      sendDataToSheets(sign * amount, desc, wallet, cat);
-    }
-    saveToDB(); render(); clearForm();
-  }
-
-  function executeTransfer() {
-    const amount = parseFloat(document.getElementById('amountInput').value);
-    const from   = document.getElementById('walletFromSelect').value;
-    const to     = document.getElementById('walletToSelect').value;
-    const date   = document.getElementById('dateInput').value;
-    if (isNaN(amount) || amount <= 0) { alert('أدخل مبلغاً صحيحاً للتحويل.'); return; }
-    if (from === to) { alert('المحفظتان متطابقتان!'); return; }
-
-    if (editingTxId !== null) {
-      const idx = state.transactions.findIndex(t => t.id === editingTxId);
-      if (idx !== -1) {
-        const old = state.transactions[idx];
-        state[old.wallet] += old.amount;
-        state[old.toWallet] -= old.amount;
-        
-        state.transactions[idx] = { id: editingTxId, desc: `تحويل من ${from.toUpperCase()} إلى ${to.toUpperCase()}`, amount, wallet: from, toWallet: to, date, type: 'transfer', category: 'تحويلات' };
-        state[from] -= amount; state[to] += amount;
-      }
-      editingTxId = null;
-      document.getElementById('btnSubmitForm').textContent = '✅ تثبيت العملية';
-      document.getElementById('formActionTitle').textContent = 'إدخال حركية مالية';
-    } else {
-      if (state[from] < amount) { alert('الرصيد المتاح غير كافٍ لإتمام حركة التحويل.'); return; }
-      state[from] -= amount; state[to] += amount;
-      const secureId = typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : Math.random().toString(36).substring(2);
-      state.transactions.unshift({
-        id: secureId, desc: `تحويل من ${from.toUpperCase()} إلى ${to.toUpperCase()}`, amount, wallet: from, toWallet: to, date, type: 'transfer', category: 'تحويلات'
-      });
-    }
-    saveToDB(); render(); clearForm();
-    sendDataToSheets(-amount, `تحويل إلى ${to}`, from, 'تحويلات');
-  }
-
-  let reconcileWallet = null;
-  function openReconciliationModal(w) {
-    reconcileWallet = w;
-    document.getElementById('modalTitle').textContent = `جرد وتسوية (${w.toUpperCase()})`;
-    document.getElementById('modalExpectedText').textContent = `الرصيد الحالي في النظام: ${fmt(state[w])} دج`;
-    document.getElementById('modalInput').value = '';
-    document.getElementById('modalOverlay').classList.add('open');
-  }
-  function saveReconciliation() {
-    const actual = parseFloat(document.getElementById('modalInput').value);
-    if (isNaN(actual) || actual < 0) { alert('أدخل رصيداً جردياً صحيحاً'); return; }
-    const diff = actual - state[reconcileWallet];
-    if (diff !== 0) {
-      const secureId = typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : Math.random().toString(36).substring(2);
-      state.transactions.unshift({
-        id: secureId, desc: `تسوية جرد (${reconcileWallet.toUpperCase()})`, amount: Math.abs(diff), wallet: reconcileWallet, date: new Date().toISOString().slice(0,10), type: diff > 0 ? 'income' : 'expense', category: 'تسوية'
-      });
-      state[reconcileWallet] = actual;
-      saveToDB(); render();
-    }
-    closeModal();
-  }
-
-  function editTransaction(id) {
-    const tx = state.transactions.find(t => t.id === id);
-    if (!tx) return;
-    
-    if (tx.type === 'transfer') {
-      document.getElementById('walletFromSelect').value = tx.wallet;
-      document.getElementById('walletToSelect').value = tx.toWallet;
-      document.getElementById('amountInput').value = tx.amount;
-      document.getElementById('dateInput').value = tx.date;
-      setType('transfer');
-    } else {
-      document.getElementById('descInput').value   = tx.desc;
-      document.getElementById('amountInput').value = tx.amount;
-      document.getElementById('walletSelect').value = tx.wallet;
-      document.getElementById('dateInput').value   = tx.date;
-      setType(tx.type);
-    }
-    document.getElementById('btnSubmitForm').textContent = '💾 حفظ تعديل الحركة المفتوحة';
-    document.getElementById('formActionTitle').textContent = 'تعديل الحركة والمحاسبة الفورية ✏️';
-    editingTxId = id;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function deleteTransaction(id) {
-    if (!confirm('هل أنت متأكد من رغبتك في حذف هذه الحركة؟')) return;
-    const tx = state.transactions.find(t => t.id === id);
-    if (!tx) return;
-    if (tx.type === 'transfer') {
-      state[tx.wallet]   += tx.amount;
-      state[tx.toWallet] -= tx.amount;
-    } else {
-      state[tx.wallet] += (tx.type === 'expense' ? 1 : -1) * tx.amount;
-    }
-    state.transactions = state.transactions.filter(t => t.id !== id);
-    saveToDB(); render();
-  }
-
-  function toggleSidebar() {
-    const sb = document.getElementById('sidebar');
-    sb.classList.toggle('open');
-    if (sb.classList.contains('open')) {
-      document.getElementById('currentBudgetDisplay').textContent = fmt(getBudgetLimit()) + ' دج';
-      calculateAnalytics();
-    }
-  }
-
-  function calculateAnalytics() {
-    const container  = document.getElementById('analyticsContainer');
-    const descCont   = document.getElementById('topDescriptionsContainer');
-    const expenses   = state.transactions.filter(t => t.type === 'expense');
-    const total      = expenses.reduce((s, t) => s + t.amount, 0);
-
-    if (!expenses.length) {
-      container.innerHTML = descCont.innerHTML = '<div class="empty-msg">لا توجد بيانات كافية لإجراء التحليل.</div>';
-      return;
-    }
-
-    const catMap = {};
-    expenses.forEach(tx => { const c = tx.category || 'أخرى'; catMap[c] = (catMap[c] || 0) + tx.amount; });
-    container.innerHTML = Object.entries(catMap).map(([cat, amt]) => {
-      const pct = total > 0 ? ((amt/total)*100).toFixed(0) : 0;
-      return `<div class="chart-row">
-        <div class="chart-info"><span>${cat}</span><span>${fmt(amt)} دج (${pct}%)</span></div>
-        <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${pct}%"></div></div>
-      </div>`;
-    }).join('');
-
-    const descMap = {};
-    expenses.forEach(tx => { descMap[tx.desc] = (descMap[tx.desc] || 0) + 1; });
-    const top5 = Object.entries(descMap).sort((a,b) => b[1]-a[1]).slice(0,5);
-    descCont.innerHTML = top5.map(([t,c]) => `<div class="top-desc-item"><span>💸 ${t}</span><strong>${c} مرات</strong></div>`).join('');
-  }
-
-  function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
-
-  function checkMonthlyHarvest() {
-    const today = new Date();
-    let lastMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const lastMonthStr = lastMonthDate.toISOString().slice(0,7);
-    const lastMonthName = lastMonthDate.toLocaleDateString('ar-DZ', { month: 'long', year: 'numeric' });
-
-    const lastMonthTxs = state.transactions.filter(t => t.date && t.date.startsWith(lastMonthStr));
-    if(!lastMonthTxs.length) return;
-
-    const income = lastMonthTxs.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
-    const expense = lastMonthTxs.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
-    const savings = income - expense;
-
-    const catMap = {};
-    lastMonthTxs.filter(t => t.type === 'expense').forEach(tx => { catMap[tx.category] = (catMap[tx.category] || 0) + tx.amount; });
-    let topCat = "لا يوجد"; let maxCatAmt = 0;
-    for(const [c, a] of Object.entries(catMap)) { if(a > maxCatAmt) { maxCatAmt = a; topCat = c; } }
-
-    document.getElementById('harvestPeriodTitle').textContent = `📊 تقرير وحصاد شهر: ${lastMonthName}`;
-    document.getElementById('harvestIncome').textContent = `${fmt(income)} دج`;
-    document.getElementById('harvestExpense').textContent = `${fmt(expense)} دج`;
-    document.getElementById('harvestSavings').textContent = `${fmt(savings)} دج`;
-    document.getElementById('harvestInsights').textContent = `🔴 الفئة الطاغية المستنزفة لسيولتك كانت: (${topCat}) بمجموع ${fmt(maxCatAmt)} دج.`;
-    document.getElementById('harvestCard').style.display = 'block';
-  }
-
-  function render() {
-    document.getElementById('cashBal').textContent  = fmt(state.cash);
-    document.getElementById('ccpBal').textContent   = fmt(state.ccp);
-    document.getElementById('totalBal').textContent = fmt(state.cash + state.ccp);
-
-    updateBudget();
-
-    const sTerm   = document.getElementById('searchFilter').value.toLowerCase();
-    const tFilter = document.getElementById('timeFilter').value;
-    const typeF   = document.getElementById('typeFilter').value;
-    const walletF = document.getElementById('walletFilter').value;
-    const thisM   = new Date().toISOString().slice(0,7);
-    const lastM   = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).toISOString().slice(0,7);
-
-    const filtered = state.transactions.filter(tx => {
-      if (sTerm && !tx.desc.toLowerCase().includes(sTerm)) return false;
-      if (typeF !== 'all' && tx.type !== typeF) return false;
-      if (walletF !== 'all' && tx.wallet !== walletF && tx.toWallet !== walletF) return false;
-      if (tFilter === 'this_month' && (!tx.date || !tx.date.startsWith(thisM))) return false;
-      if (tFilter === 'last_month' && (!tx.date || !tx.date.startsWith(lastM))) return false;
-      return true;
-    });
-
-    const list = document.getElementById('txList');
-    list.innerHTML = ''; 
-
-    if (!filtered.length) {
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'empty-msg';
-      emptyDiv.textContent = 'لا توجد حركات تطابق التصفية الاختيارية.';
-      list.appendChild(emptyDiv);
-      return;
-    }
-
-    const fragment = document.createDocumentFragment();
-
-    filtered.forEach(tx => {
-      let sign = '-', cls = 'expense';
-      let walletLabel = tx.wallet === 'cash' ? '💵 كاش' : '🏦 CCP';
-      if (tx.type === 'income')    { sign = '+'; cls = 'income'; }
-      if (tx.type === 'transfer')  { sign = '🔄'; cls = 'transfer'; walletLabel = `${tx.wallet.toUpperCase()} ⬅️ ${tx.toWallet.toUpperCase()}`; }
-      const cat = tx.category ? ` · 🏷️ ${tx.category}` : '';
-
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'tx-item';
-      itemDiv.innerHTML = `
-        <div class="tx-left">
-          <div class="tx-desc">${tx.desc}</div>
-          <div class="tx-meta">${walletLabel}${cat} · ${tx.date}</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount ${cls}">${sign} ${fmt(tx.amount)} دج</div>
-          <button class="tx-btn edit-action-btn">✏️</button>
-          <button class="tx-btn delete-action-btn">🗑</button>
-        </div>
-      `;
-
-      itemDiv.querySelector('.edit-action-btn').onclick = () => editTransaction(tx.id);
-      itemDiv.querySelector('.delete-action-btn').onclick = () => deleteTransaction(tx.id);
-
-      fragment.appendChild(itemDiv);
-    });
-
-    list.appendChild(fragment);
-  }
-
-  function updateBudget() {
-    const limit   = getBudgetLimit();
-    const thisM   = new Date().toISOString().slice(0,7);
-    const spent   = state.transactions.filter(t => t.type === 'expense' && t.date && t.date.startsWith(thisM)).reduce((s,t) => s + t.amount, 0);
-    const pct = limit > 0 ? Math.min((spent/limit)*100, 100).toFixed(0) : 0;
-    document.getElementById('budgetPercentText').textContent = pct + '%';
-    document.getElementById('budgetBarFill').style.width = pct + '%';
-    document.getElementById('budgetBarFill').style.background = pct > 85 ? 'var(--red)' : pct > 60 ? 'var(--yellow)' : 'var(--green)';
-    document.getElementById('budgetDetailText').textContent = limit > 0 ? `${fmt(spent)} دج من أصل ${fmt(limit)} دج` : 'اضغط تعديل لإدخال خطتك.';
-  }
-
-  function exportToCSV() {
-    if (!state.transactions.length) { alert('السجل فارغ تماماً'); return; }
-    let csv = "\ufeffالتاريخ,الوصف,المبلغ (دج),النوع,المحفظة,التصنيف\n";
-    state.transactions.forEach(tx => { csv += `${tx.date},${tx.desc.replace(/,/g,' ')},${tx.amount},${tx.type},${tx.wallet},${tx.category||'أخرى'}\n`; });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-    a.download = `mizania_v5.5_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-  }
-
-  function loadApp() {
-    initIndexedDB(() => {
-      loadFromDB(() => {
-        document.getElementById('dateInput').valueAsDate = new Date();
-        setType('expense');
-        render();
-        checkMonthlyHarvest();
-        if (!localStorage.getItem('scriptUrl')) document.getElementById('setupScreen').style.display = 'flex';
-        else fetchCloudConfigurationBackup();
-      });
-    });
-  }
-
-  function saveScriptUrl() {
-    const url = document.getElementById('scriptUrlInput').value.trim();
-    if (url.startsWith('https://script.google.com/')) {
-      localStorage.setItem('scriptUrl', url);
-      document.getElementById('setupScreen').style.display = 'none';
-      fetchCloudConfigurationBackup();
-    } else alert('الرابط غير صحيح أو غير مدعوم للشبكة الآمنة.');
-  }
-
-  // ── المزامنة الفوقية والنسخ الاحتياطي عبر وضع no-cors العملي مع إشعار المستخدم بصوت صادق ──
-  function triggerManualCloudBackup() {
-    const url = localStorage.getItem('scriptUrl');
-    if(!url) return;
-    const backupPayload = { isConfigBackup: true, cash: state.cash, ccp: state.ccp, budgetLimit: getBudgetLimit(), wordWeights: state.wordWeights };
-    
-    fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(backupPayload) })
-    .then(() => {
-      alert('☁️ تم إرسال طلب النسخ الاحتياطي سحابياً بنجاح! (ملاحظة: لا يمكن للمتصفح التحقق من وصول البيانات بنسبة 100% بسبب قيود الـ Redirect والـ CORS الخاصة بـ Google Apps Script).');
-    })
-    .catch(() => alert('⚠️ فشل في إرسال البيانات للـ Cloud! تأكد من إعدادات الشبكة المحلية.'));
-  }
-
-  function fetchCloudConfigurationBackup() {
-    const url = localStorage.getItem('scriptUrl');
-    if(!url) return;
-    fetch(url + "?getConfig=true", { mode: 'cors' }).then(res => {
-      if(res.ok) return res.json();
-    }).then(cloudData => {
-      if(cloudData && cloudData.wordWeights) {
-        state.cash = cloudData.cash || state.cash;
-        state.ccp = cloudData.ccp || state.ccp;
-        state.wordWeights = cloudData.wordWeights;
-        if(cloudData.budgetLimit) localStorage.setItem('budgetLimit', cloudData.budgetLimit);
-        saveToDB(); render();
-      }
-    }).catch(() => {});
-  }
-
-  function sendDataToSheets(amount, description, type, category) {
-    const url = localStorage.getItem('scriptUrl'); if (!url) return;
-    const payload = { amount, description, type, category };
-    fetch(url, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).catch(() => {});
-  }
-
-  function clearForm() { document.getElementById('descInput').value = ''; document.getElementById('amountInput').value = ''; }
+  ledgerState.transactions.unshift(ledgerTx);
+  persistTx(ledgerTx);
   
-  function clearAll() { 
-    if (confirm('تحذير: هل تود مسح السجل وتصفير كل الأرصدة والأوزان كلياً وبشكل متناسق؟')) { 
-      state.transactions = []; 
-      state.cash = 0;
-      state.ccp = 0;
-      state.wordWeights = {};
-      saveToDB(); 
-      render(); 
-    } 
-  }
-  
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+  enqueueForSync(ledgerTx);
+  recalculateAndRender();
+}
 
-  loadApp();
+function softDeleteLedgerEvent(id) {
+  const tx = ledgerState.transactions.find(t => t.id === id);
+  if (!tx) return;
+
+  tx.deletedAt = new Date().toISOString();
+  tx.syncStatus = 'pending';
+  tx.updatedAt = Date.now();
+  tx.version += 1;
+
+  persistTx(tx);
+  enqueueForSync(tx);
+  recalculateAndRender();
+}
+
+// 6. SYNC ENGINE REVISION (إصلاح 4: حفظ محاولات الفشل في المخزن المحلي)
+function enqueueForSync(txEvent) {
+  const queueItem = {
+    id: txEvent.id,
+    payload: JSON.parse(JSON.stringify(txEvent)),
+    enqueuedAt: Date.now(),
+    attemptCount: 0
+  };
+
+  ledgerState.syncQueue = ledgerState.syncQueue.filter(q => q.id !== txEvent.id);
+  ledgerState.syncQueue.push(queueItem);
+  queueStorePut(queueItem);
+  
+  processSyncQueue();
+}
+
+function processSyncQueue() {
+  if (syncInProgress) return;
+  if (ledgerState.syncQueue.length === 0 || !navigator.onLine || !ledgerState.settings.serverUrl) {
+    updateSyncVisualIndicator();
+    return;
+  }
+
+  syncInProgress = true;
+  const currentItem = ledgerState.syncQueue[0];
+  updateSyncVisualIndicator('syncing');
+
+  fetch(ledgerState.settings.serverUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'sync_event', event: currentItem.payload })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Network fail');
+    return res.json();
+  })
+  .then(data => {
+    if (data && data.success) {
+      const syncedTx = ledgerState.transactions.find(t => t.id === currentItem.id);
+      if (syncedTx && syncedTx.version === currentItem.payload.version) {
+        syncedTx.syncStatus = 'synced';
+        persistTx(syncedTx);
+      }
+      
+      ledgerState.syncQueue.shift();
+      queueStoreDelete(currentItem.id);
+      
+      syncInProgress = false;
+      processSyncQueue();
+    } else {
+      throw new Error('Rejected');
+    }
+  })
+  .catch(err => {
+    console.warn('Sync failed:', err);
+    currentItem.attemptCount++;
+    
+    // إصلاح 4: كتابة وتحديث عدد المحاولات الفاشلة بشكل دائم داخل المخزن لضمان الاحتفاظ بحالة الدفتر عند الإغلاق
+    queueStorePut(currentItem);
+    
+    syncInProgress = false;
+    updateSyncVisualIndicator();
+  });
+}
+
+function updateSyncVisualIndicator() {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncStatusText');
+  
+  if (syncInProgress) {
+    dot.className = 'dot syncing'; txt.textContent = 'جاري المزامنة..';
+  } else if (!navigator.onLine || !ledgerState.settings.serverUrl) {
+    dot.className = 'dot'; txt.textContent = 'حفظ محلي مؤمن';
+  } else {
+    dot.className = 'dot online'; txt.textContent = 'سحابي متطابق';
+  }
+}
+
+// واجهة حفظ الرابط برمجياً محلياً (إصلاح 1)
+function saveSyncUrl() {
+  const url = document.getElementById('syncServerUrl').value.trim();
+  localStorage.setItem('v6_server_url', url);
+  ledgerState.settings.serverUrl = url;
+  alert('تم حفظ وتحديث رابط خادم المزامنة بنجاح.');
+  processSyncQueue();
+}
+
+// 7. INPUT/OUTPUT SECURITY PORTABILITY
+function exportEngineBackup() {
+  const bundle = {
+    schemaVersion: '6.0',
+    exportTimestamp: Date.now(),
+    transactions: ledgerState.transactions
+  };
+
+  const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `mizania_v6_personal_backup_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function processImportFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.schemaVersion === '6.0' && Array.isArray(data.transactions)) {
+        analyzeAndShowImportPreview(data.transactions);
+      } else {
+        alert('الملف لا يتوافق مع بنية v6.0 الحالية.');
+      }
+    } catch (err) {
+      alert('خطأ حرج في صياغة ملف التصدير المرفوع.');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function analyzeAndShowImportPreview(incomingTx) {
+  let acceptedCount = 0; let rejectedOrDupCount = 0;
+  let validIncomingEvents = [];
+  
+  incomingTx.forEach(tx => {
+    if (!validateTransaction(tx)) { rejectedOrDupCount++; return; }
+    const isDup = ledgerState.transactions.some(t => t.id === tx.id);
+    if (isDup) { rejectedOrDupCount++; } else { validIncomingEvents.push(tx); acceptedCount++; }
+  });
+
+  if (validIncomingEvents.length === 0) {
+    alert('جميع المحتويات مسجلة مسبقاً ولا توجد عمليات جديدة الدمج.');
+    return;
+  }
+
+  const currentBalances = ledgerState.projections;
+  const tempAll = [...ledgerState.transactions, ...validIncomingEvents];
+  
+  let cash = 0; let ccp = 0;
+  tempAll.filter(t => !t.deletedAt).sort((a,b)=>a.date.localeCompare(b.date) || a.ledgerOrder - b.ledgerOrder).forEach(t => {
+    if (t.type === 'income') { if (t.fromWalletId === 'cash') cash += t.amountMinor; if (t.fromWalletId === 'ccp') ccp += t.amountMinor; }
+    if (t.type === 'expense') { if (t.fromWalletId === 'cash') cash -= t.amountMinor; if (t.fromWalletId === 'ccp') ccp -= t.amountMinor; }
+    if (t.type === 'transfer') { if (t.fromWalletId === 'cash') { cash -= t.amountMinor; ccp += t.amountMinor; } if (t.fromWalletId === 'ccp') { ccp -= t.amountMinor; cash += t.amountMinor; } }
+    if (t.type === 'reconciliation') { if (t.fromWalletId === 'cash') cash = t.amountMinor; if (t.fromWalletId === 'ccp') ccp = t.amountMinor; }
+  });
+
+  importCache = validIncomingEvents;
+
+  document.getElementById('pTotal').textContent = acceptedCount;
+  document.getElementById('pDup').textContent = rejectedOrDupCount;
+  document.getElementById('pCash').textContent = fmtDzd(cash - currentBalances.cash);
+  document.getElementById('pCcp').textContent = fmtDzd(ccp - currentBalances.ccp);
+  
+  document.getElementById('previewModal').classList.add('open');
+}
+
+function commitImport() {
+  if (!importCache || importCache.length === 0) return;
+  importCache.forEach(tx => { ledgerState.transactions.push(tx); persistTx(tx); enqueueForSync(tx); });
+  ledgerState.transactions.sort((a,b) => b.date.localeCompare(a.date) || b.ledgerOrder - a.ledgerOrder);
+  importCache = null; closePreviewModal(); recalculateAndRender();
+}
+
+function closePreviewModal() { document.getElementById('previewModal').classList.remove('open'); importCache = null; }
+
+// 8. PRESENTATION LAYER: TEXTCONTENT SECURITY DOM
+function recalculateAndRender() {
+  computeProjections();
+  
+  document.getElementById('netWorthDisplay').textContent = fmtDzd(ledgerState.projections.net);
+  document.getElementById('cashDisplay').textContent = fmtDzd(ledgerState.projections.cash);
+  document.getElementById('ccpDisplay').textContent = fmtDzd(ledgerState.projections.ccp);
+
+  const container = document.getElementById('ledgerContainer');
+  container.innerHTML = '';
+
+  const activeRecords = ledgerState.transactions.filter(t => !t.deletedAt);
+  const visibleChunk = activeRecords.slice(0, itemsLimit);
+
+  if (visibleChunk.length === 0) {
+    const emptyNotice = document.createElement('div');
+    emptyNotice.style.cssText = "text-align:center; padding:30px; color:var(--muted);";
+    emptyNotice.textContent = "سجل الدفاتر فارغ أو جرى تصفيره بالكامل.";
+    container.appendChild(emptyNotice);
+    document.getElementById('loadMoreBox').style.display = 'none';
+    return;
+  }
+
+  visibleChunk.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'tx-row';
+    
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'tx-info';
+    
+    const descDiv = document.createElement('div');
+    descDiv.className = 'tx-desc';
+    descDiv.textContent = t.description; // تحصين مطلق ضد XSS الاستيراد
+    
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'tx-meta';
+    let targetMeta = t.type === 'transfer' ? `إلى ${t.toWalletId.toUpperCase()}` : t.fromWalletId.toUpperCase();
+    metaDiv.textContent = `${t.date.replace('T', ' ')} • ${targetMeta} [${t.type}]`;
+    
+    infoDiv.appendChild(descDiv);
+    infoDiv.appendChild(metaDiv);
+    
+    const amountArea = document.createElement('div');
+    amountArea.className = 'tx-amount-area';
+    
+    const amtSpan = document.createElement('div');
+    let sign = t.type === 'income' ? '+' : t.type === 'expense' ? '-' : '⇄';
+    amtSpan.className = `tx-amt ${t.type}`;
+    amtSpan.textContent = `${sign} ${toMajor(t.amountMinor)}`;
+    
+    const delBtn = document.createElement('button');
+    delBtn.className = 'action-icon';
+    delBtn.textContent = '🗑️';
+    delBtn.onclick = () => softDeleteLedgerEvent(t.id);
+    
+    amountArea.appendChild(amtSpan);
+    amountArea.appendChild(delBtn);
+    
+    row.appendChild(infoDiv);
+    row.appendChild(amountArea);
+    
+    container.appendChild(row);
+  });
+
+  document.getElementById('loadMoreBox').style.display = activeRecords.length > itemsLimit ? 'block' : 'none';
+  updateSyncVisualIndicator();
+}
+
+function loadMoreTx() { itemsLimit += 20; recalculateAndRender(); }
+
+function handleFormSubmit() {
+  const desc = document.getElementById('txDesc').value.trim();
+  const amt = document.getElementById('txAmount').value;
+  const wFrom = document.getElementById('txWallet').value;
+  const wTo = document.getElementById('txToWallet').value;
+  const dateInput = document.getElementById('txDate').value;
+
+  if (currentType !== 'transfer' && !desc) { alert('البيان حقل إلزامي لتوثيق الحركة محاسبياً.'); return; }
+  
+  const finalDesc = currentType === 'transfer' ? `تحويل مالي بين المستودعات الفردية` : desc;
+  const finalIsoDate = dateInput ? new Date(dateInput).toISOString() : new Date().toISOString();
+
+  createLedgerEvent(currentType, finalDesc, amt, wFrom, wTo, finalIsoDate);
+
+  document.getElementById('txDesc').value = '';
+  document.getElementById('txAmount').value = '';
+}
+
+function setTxType(type, btn) {
+  currentType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.getElementById('descField').style.display = type === 'transfer' ? 'none' : 'block';
+  document.getElementById('toWalletField').style.display = type === 'transfer' ? 'flex' : 'none';
+  document.querySelector('#walletField label').textContent = type === 'reconciliation' ? 'مستودع الجرد والتسوية المطلقة' : 'المستودع المالي';
+}
+
+function triggerPurgeAll() {
+  if (!confirm('تحذير صارم: سيتم مسح الدفاتر محلياً بالكامل. هل تريد الاستمرار؟')) return;
+  const tx = dbEngine.transaction(['transactions', 'syncQueue'], 'readwrite');
+  tx.objectStore('transactions').clear();
+  tx.objectStore('syncQueue').clear();
+  ledgerState.transactions = [];
+  ledgerState.syncQueue = [];
+  recalculateAndRender();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const localDate = new Date();
+  localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+  document.getElementById('txDate').value = localDate.toISOString().slice(0, 16);
+  
+  if (ledgerState.settings.serverUrl) {
+    document.getElementById('syncServerUrl').value = ledgerState.settings.serverUrl;
+  }
+
+  initStorageEngine(() => {
+    recalculateAndRender();
+    window.addEventListener('online', processSyncQueue);
+    processSyncQueue();
+  });
+});
 </script>
 </body>
 </html>
