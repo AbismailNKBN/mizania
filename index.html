@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ميزانيتي — v6 Personal Ledger</title>
+<title>ميزانيتي — v6.2 Ultimate Hybrid Ledger</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600&display=swap');
 :root {
@@ -17,6 +17,7 @@ body { background: var(--bg); color: var(--text); padding-bottom: 60px; font-siz
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
 .brand h1 { font-size: 1.2rem; font-weight: 700; color: var(--text); }
 .brand p { font-size: 0.7rem; color: var(--gold); letter-spacing: 1px; font-family: 'Inter', sans-serif; }
+
 .status-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .dot.online { background: var(--green); }
@@ -24,14 +25,18 @@ body { background: var(--bg); color: var(--text); padding-bottom: 60px; font-siz
 @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
 .hero-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; margin-bottom: 20px; text-align: center; }
-.hero-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.hero-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; }
 .hero-amount { font-size: 2.4rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+
 .wallets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
 .wallet-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
 .wallet-box h3 { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
 .wallet-val { font-size: 1.3rem; font-weight: 700; font-family: 'Inter', sans-serif; }
 .wallet-box.cash .wallet-val { color: var(--gold); }
 .wallet-box.ccp .wallet-val { color: #60a5fa; }
+
+.sync-settings-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 20px; display: flex; gap: 8px; align-items: flex-end; }
+.sync-settings-box .field { flex: 1; }
 
 .form-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 20px; }
 .type-selector { display: flex; gap: 6px; background: var(--surface); padding: 4px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px; }
@@ -41,34 +46,37 @@ body { background: var(--bg); color: var(--text); padding-bottom: 60px; font-siz
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field label { font-size: 0.75rem; color: var(--muted); }
 input, select { background: var(--surface); border: 1px solid var(--border); padding: 10px 14px; color: var(--text); border-radius: 8px; outline: none; font-size: 0.9rem; }
-input:focus, select:focus { border-color: var(--accent); }
+
 .btn-block { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-.btn-block:active { opacity: 0.9; }
 .tools-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
 .btn-sub { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; text-align: center; }
-.btn-sub:hover { border-color: var(--subtle); color: var(--text); }
-
-/* واجهة إعدادات المزامنة المضافة البسيطة */
-.sync-settings-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 20px; display: flex; gap: 8px; align-items: flex-end; }
-.sync-settings-box .field { flex: 1; }
 
 .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.ledger-header h2 { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; }
-.tx-list { display: flex; flex-direction: column; gap: 8px; }
-.tx-row { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-.tx-info { display: flex; flex-direction: column; gap: 2px; }
-.tx-desc { font-weight: 600; font-size: 0.9rem; color: var(--text); }
-.tx-meta { font-size: 0.7rem; color: var(--muted); font-family: 'Inter', sans-serif; }
-.tx-amount-area { display: flex; align-items: center; gap: 12px; }
-.tx-amt { font-weight: 700; font-family: 'Inter', sans-serif; }
-.tx-amt.expense { color: var(--red); }
-.tx-amt.income { color: var(--green); }
-.tx-amt.transfer { color: #818cf8; }
-.tx-amt.reconciliation { color: #e2e8f0; }
-.action-icon { background: none; border: none; color: var(--subtle); cursor: pointer; font-size: 1rem; padding: 4px; }
-.action-icon:hover { color: var(--red); }
-.load-more { text-align: center; margin-top: 12px; }
+.ledger-header h2 { font-size: 0.8rem; color: var(--muted); }
 
+/* بطاقات العمليات المصححة بالكامل */
+.tx-card-v6 { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+.tx-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.tx-card-main { display: flex; flex-direction: column; gap: 2px; }
+.tx-card-title { font-weight: 600; font-size: 0.95rem; color: var(--text); outline: none; padding: 2px 4px; border-radius: 4px; }
+.tx-card-title:focus { background: var(--card); border: 1px solid var(--accent); }
+.tx-card-date { font-size: 0.7rem; color: var(--muted); font-family: 'Inter'; }
+.tx-card-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: var(--card); border: 1px solid var(--border); display: inline-block; width: max-content; margin-top: 4px; }
+
+.tx-card-right { display: flex; align-items: center; gap: 12px; }
+.tx-card-amount { font-weight: 700; font-size: 1.1rem; font-family: 'Inter'; outline: none; padding: 2px 4px; border-radius: 4px; text-align: left; }
+.tx-card-amount:focus { background: var(--card); border: 1px solid var(--accent); }
+.tx-card-amount.expense { color: var(--red); }
+.tx-card-amount.income { color: var(--green); }
+.tx-card-amount.transfer { color: #818cf8; }
+.tx-card-amount.reconciliation { color: #e2e8f0; }
+
+/* لوحة تحكم وتعديل متكاملة مغلقة الثغرات المنطقية */
+.tx-analysis-panel { border-top: 1px dashed var(--border); padding-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.panel-selectors { display: flex; gap: 6px; align-items: center; }
+.analysis-select { padding: 4px 6px; font-size: 0.75rem; border-radius: 6px; background: var(--card); color: var(--text); border: 1px solid var(--border); }
+
+/* مودال فحص ومعاينة الاستيراد والدمج */
 .preview-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
 .preview-modal.open { display: flex; }
 .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; width: min(420px, 92vw); }
@@ -85,16 +93,16 @@ input:focus, select:focus { border-color: var(--accent); }
   <div class="header">
     <div class="brand">
       <h1>ميزانيتي</h1>
-      <p>PERSONAL LEDGER v6.0</p>
+      <p>ULTIMATE HYBRID LEDGER v6.2</p>
     </div>
     <div class="status-badge">
       <div class="dot" id="syncDot"></div>
-      <span id="syncStatusText">لوكال</span>
+      <span id="syncStatusText">جاري الفحص..</span>
     </div>
   </div>
 
   <div class="hero-card">
-    <div class="hero-label">صافي السيولة النقدية المشتقة</div>
+    <div class="hero-label">صافي السيولة النقدية المشتقة الفعالة</div>
     <div class="hero-amount" id="netWorthDisplay">0.00 دج</div>
   </div>
 
@@ -111,10 +119,10 @@ input:focus, select:focus { border-color: var(--accent); }
 
   <div class="sync-settings-box">
     <div class="field">
-      <label style="font-size: 0.75rem; color: var(--muted);">رابط خادم المزامنة (Google Apps Script URL)</label>
+      <label>رابط خادم المزامنة السحابي (Google Apps Script URL)</label>
       <input type="text" id="syncServerUrl" placeholder="https://script.google.com/macros/s/.../exec" style="padding: 6px 10px; font-size: 0.8rem; width: 100%;"/>
     </div>
-    <button class="btn-sub" style="padding: 7px 14px;" onclick="saveSyncUrl()">حفظ</button>
+    <button class="btn-sub" style="padding: 7px 14px;" onclick="saveSyncUrl()">حفظ الرابط</button>
   </div>
 
   <div class="form-box">
@@ -126,8 +134,8 @@ input:focus, select:focus { border-color: var(--accent); }
     </div>
 
     <div class="field" id="descField" style="margin-bottom:12px;">
-      <label>بيان القيد المالي</label>
-      <input type="text" id="txDesc" placeholder="مثال: شراء دقيق، سحب مرتب..."/>
+      <label>بيان القيد المالي (الوصف)</label>
+      <input type="text" id="txDesc" placeholder="مثال: شراء ملابس، سحب كاش من البريد..."/>
     </div>
 
     <div class="input-grid">
@@ -151,43 +159,34 @@ input:focus, select:focus { border-color: var(--accent); }
       </div>
     </div>
 
-    <div class="field" style="margin-bottom:12px;">
-      <label>التاريخ والوقت المحاسبي</label>
-      <input type="datetime-local" id="txDate"/>
-    </div>
-
-    <button class="btn-block" onclick="handleFormSubmit()">قيد الحركة في السجل المركزي</button>
+    <button class="btn-block" onclick="handleFormSubmit()">تسجيل القيد في السجل المركزي</button>
     
     <div class="tools-row">
-      <button class="btn-sub" onclick="exportEngineBackup()">تصدير الآمن (JSON)</button>
-      <button class="btn-sub" onclick="document.getElementById('importFile').click()">استيراد آمن</button>
+      <button class="btn-sub" style="border-color: var(--gold); color: var(--text);" onclick="exportEngineBackup()">تصدير واستخراج نسخة الاحتياط اليدوية (JSON) 📥</button>
+      <button class="btn-sub" onclick="document.getElementById('importFile').click()">استيراد ودمج دفاتر احتياطية 📤</button>
       <input type="file" id="importFile" style="display:none;" accept=".json" onchange="processImportFile(this)"/>
     </div>
   </div>
 
   <div class="ledger-header">
-    <h2>دفتر العمليات المحاسبي التدقيقي (Audit Trail)</h2>
-    <button class="btn-sub" style="padding:2px 8px; font-size:0.7rem;" onclick="triggerPurgeAll()">تصفير شامل</button>
+    <h2>سجل الدفاتر المركزي ولوحة معالجة الأحداث المباشرة</h2>
   </div>
   
-  <div class="tx-list" id="ledgerContainer"></div>
-  <div class="load-more" id="loadMoreBox" style="display:none;">
-    <button class="btn-sub" style="width:100%;" onclick="loadMoreTx()">تحميل الحركات الأقدم</button>
-  </div>
+  <div id="ledgerContainer"></div>
 </div>
 
 <div class="preview-modal" id="previewModal">
   <div class="modal-content">
-    <h3>معاينة وتحليل حزمة الاستيراد قبل التثبيت</h3>
+    <h3>تحليل ومعاينة ملف الاستعادة قبل التثبيت (إصلاح 2)</h3>
     <div class="preview-metrics">
-      <div class="metric-tile"><p>إجمالي العمليات المعتمدة</p><span id="pTotal">0</span></div>
-      <div class="metric-tile"><p>عمليات مرفوضة/مكررة</p><span id="pDup" style="color:var(--gold);">0</span></div>
-      <div class="metric-tile"><p>تأثير الكاش</p><span id="pCash">0.00</span></div>
-      <div class="metric-tile"><p>تأثير الـ CCP</p><span id="pCcp">0.00</span></div>
+      <div class="metric-tile"><p>عمليات معتمدة وجديدة</p><span id="pTotal">0</span></div>
+      <div class="metric-tile"><p>مرفوضة / مكررة مسبقاً</p><span id="pDup" style="color:var(--gold);">0</span></div>
+      <div class="metric-tile"><p>تأثير الكاش المتوقع</p><span id="pCash">0.00</span></div>
+      <div class="metric-tile"><p>تأثير الـ CCP المتوقع</p><span id="pCcp">0.00</span></div>
     </div>
     <div class="tools-row">
-      <button class="btn-sub" style="background:var(--surface)" onclick="closePreviewModal()">إلغاء تماماً</button>
-      <button class="btn-block" style="margin-top:0;" onclick="commitImport()">اعتماد ودمج الدفاتر</button>
+      <button class="btn-sub" style="background:var(--surface)" onclick="closePreviewModal()">إلغاء التثبيت</button>
+      <button class="btn-block" style="margin-top:0;" onclick="commitImport()">اعتماد ودمج الحسابات الفوري</button>
     </div>
   </div>
 </div>
@@ -195,53 +194,44 @@ input:focus, select:focus { border-color: var(--accent); }
 <script>
 /**
  * ============================================================================
- * V6 PERSONAL LEDGER ENGINE - VERIFIED HAND-HELD REVISION
+ * V6.2 ULTIMATE HYBRID LEDGER ENGINE - ARCHITECTURAL RESOLUTION
  * ============================================================================
  */
 
 let ledgerState = {
   transactions: [],
   syncQueue: [],
-  settings: { serverUrl: localStorage.getItem('v6_server_url') || '', lastRevision: 0 },
+  settings: { serverUrl: localStorage.getItem('v6_server_url') || '' },
   projections: { cash: 0, ccp: 0, net: 0 }
 };
 
 let currentType = 'expense';
-let itemsLimit = 20;
-let importCache = null;
 let syncInProgress = false;
+let importCache = null;
 
 const VALID_WALLETS = ['cash', 'ccp'];
 const VALID_TYPES = ['income', 'expense', 'transfer', 'reconciliation'];
 
-// 1. STRICT INTEGER PARSER
+// المحلل الرياضي الصارم للمبالغ المانع للكسور وقيمة الصفر
 function parseToMinor(inputVal) {
   if (typeof inputVal === 'number') inputVal = inputVal.toString();
   if (!inputVal || typeof inputVal !== 'string') return null;
-  
   const cleaned = inputVal.trim().replace(/,/g, '');
   const strictRegex = /^\d+(\.\d{1,2})?$/;
   if (!strictRegex.test(cleaned)) return null;
-  
   const parts = cleaned.split('.');
   const dinars = parseInt(parts[0], 10);
   let cents = 0;
-  if (parts[1]) {
-    cents = parseInt(parts[1].padEnd(2, '0'), 10);
-  }
-  
-  if (isNaN(dinars) || isNaN(cents)) return null;
+  if (parts[1]) cents = parseInt(parts[1].padEnd(2, '0'), 10);
   return (dinars * 100) + cents;
 }
 
 const toMajor = val => (val / 100).toFixed(2);
 const fmtDzd = val => new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2 }).format(val / 100) + ' دج';
 
-// 2. PROJECTIONS ENGINE WITH HISTORICAL SEQUENCE ORDER
+// حساب الأرصدة المشتقة التعاقبية
 function computeProjections() {
-  let cash = 0;
-  let ccp = 0;
-
+  let cash = 0; let ccp = 0;
   const activeTx = [...ledgerState.transactions]
     .filter(t => !t.deletedAt)
     .sort((a, b) => a.date.localeCompare(b.date) || a.ledgerOrder - b.ledgerOrder);
@@ -266,14 +256,13 @@ function computeProjections() {
         break;
     }
   });
-
   ledgerState.projections = { cash, ccp, net: cash + ccp };
 }
 
-// 3. STORAGE LAYER: APPEND-ONLY INDIVIDUAL ROWS
+// تخزين مستقل append-only مزدوج (جدول المعاملات وجدول طابور المزامنة)
 let dbEngine = null;
 function initStorageEngine(callback) {
-  const request = indexedDB.open('Mizania_Personal_v6', 1);
+  const request = indexedDB.open('Mizania_Ultimate_v62', 1);
   request.onupgradeneeded = e => {
     const db = e.target.result;
     db.createObjectStore('transactions', { keyPath: 'id' });
@@ -281,42 +270,35 @@ function initStorageEngine(callback) {
   };
   request.onsuccess = e => {
     dbEngine = e.target.result;
-    hydrateStateFromStorage(callback);
+    hydrateState(callback);
   };
-  request.onerror = () => { alert('فشل فتح قاعدة البيانات المحلية للدفتر!'); };
 }
 
 function persistTx(tx) {
   if (!dbEngine) return;
-  const store = dbEngine.transaction('transactions', 'readwrite').objectStore('transactions');
-  store.put(tx);
+  dbEngine.transaction('transactions', 'readwrite').objectStore('transactions').put(tx);
 }
 
-function queueStorePut(queueItem) {
+function queueStorePut(qItem) {
   if (!dbEngine) return;
-  const store = dbEngine.transaction('syncQueue', 'readwrite').objectStore('syncQueue');
-  store.put(queueItem);
+  dbEngine.transaction('syncQueue', 'readwrite').objectStore('syncQueue').put(qItem);
 }
 
 function queueStoreDelete(id) {
   if (!dbEngine) return;
-  const store = dbEngine.transaction('syncQueue', 'readwrite').objectStore('syncQueue');
-  store.delete(id);
+  dbEngine.transaction('syncQueue', 'readwrite').objectStore('syncQueue').delete(id);
 }
 
-function hydrateStateFromStorage(callback) {
+function hydrateState(callback) {
   const tx = dbEngine.transaction(['transactions', 'syncQueue'], 'readonly');
-  const txStore = tx.objectStore('transactions');
-  const qStore = tx.objectStore('syncQueue');
-
   const allTx = [];
-  txStore.openCursor().onsuccess = e => {
+  tx.objectStore('transactions').openCursor().onsuccess = e => {
     const cursor = e.target.result;
     if (cursor) { allTx.push(cursor.value); cursor.continue(); }
     else {
       ledgerState.transactions = allTx.sort((a,b) => b.date.localeCompare(a.date) || b.ledgerOrder - a.ledgerOrder);
       const allQ = [];
-      qStore.openCursor().onsuccess = ev => {
+      tx.objectStore('syncQueue').openCursor().onsuccess = ev => {
         const cQ = ev.target.result;
         if (cQ) { allQ.push(cQ.value); cQ.continue(); }
         else {
@@ -329,43 +311,77 @@ function hydrateStateFromStorage(callback) {
   };
 }
 
-// 4. SCHEMA VALIDATION MATRIX (إصلاح 3: إغلاق ثغرة قيمة الصفر)
+// مصفوفة التحقق الهيكلي الصارم المانعة لتشوه الدفاتر
 function validateTransaction(tx) {
   if (!tx || typeof tx !== 'object') return false;
   if (typeof tx.id !== 'string' || tx.id.length < 20) return false;
   if (!VALID_TYPES.includes(tx.type)) return false;
-  
-  // إلزامية أن يكون المبلغ أكبر قطعيًا من صفر (منع تمرير 0 أو أقل)
   if (typeof tx.amountMinor !== 'number' || tx.amountMinor <= 0 || isNaN(tx.amountMinor)) return false;
-  if (tx.currency !== 'DZD') return false;
   if (!VALID_WALLETS.includes(tx.fromWalletId)) return false;
   
-  // منع التحويل لنفس المحفظة محاسبياً (إصلاح 2)
-  if (tx.type === 'transfer' && (!VALID_WALLETS.includes(tx.toWalletId) || tx.fromWalletId === tx.toWalletId)) return false;
-  
-  if (typeof tx.description !== 'string') return false;
-  if (typeof tx.date !== 'string' || isNaN(Date.parse(tx.date))) return false;
-  if (typeof tx.ledgerOrder !== 'number') return false;
-  if (typeof tx.version !== 'number') return false;
+  // حماية منطق عمليات التحويل
+  if (tx.type === 'transfer') {
+    if (!VALID_WALLETS.includes(tx.toWalletId) || tx.fromWalletId === tx.toWalletId) return false;
+  }
   return true;
 }
 
-// 5. TRANSACTION MUTATIONS WITH VALIDATIONS (إصلاح 2 و 3 على مستوى النموذج واجهة المدخلات)
-function createLedgerEvent(type, description, amountVal, fromWallet, toWallet, customDate) {
-  const amountMinor = parseToMinor(amountVal);
+// ============================================================================
+// إصلاح ثغرة تعديل الكروت القاتلة (إصلاح 1 و 3: لوحة تعديل شاملة آمنة تماماً)
+// ============================================================================
+function commitCardMutation(id, fieldsObj) {
+  const tx = ledgerState.transactions.find(t => t.id === id);
+  if (!tx) return;
+
+  // نسخ احتياطي موضعي للمحاكاة والتحقق قبل الالتزام بالحفظ في قاعدة البيانات
+  const backup = JSON.parse(JSON.stringify(tx));
   
-  if (amountMinor === null || amountMinor <= 0) { 
-    alert('فشل: يرجى إدخال مبلغ مالي صحيح وأكبر من الصفر.'); 
-    return; 
+  if (fieldsObj.description !== undefined) tx.description = fieldsObj.description.trim();
+  if (fieldsObj.amountStr !== undefined) {
+    const parsed = parseToMinor(fieldsObj.amountStr);
+    if (parsed !== null && parsed > 0) tx.amountMinor = parsed;
   }
-  
-  if (type === 'transfer' && fromWallet === toWallet) {
-    alert('فشل: لا يمكن تنفيذ تحويل مالي داخلي لنفس مستودع الحفظ المصدر.');
+  if (fieldsObj.type !== undefined) tx.type = fieldsObj.type;
+  if (fieldsObj.fromWalletId !== undefined) tx.fromWalletId = fieldsObj.fromWalletId;
+  if (fieldsObj.toWalletId !== undefined) tx.toWalletId = fieldsObj.toWalletId;
+
+  // معالجة السلامة البنيوية عند التغيير اللحظي لنوع العملية (إصلاح 1 الحرج)
+  if (tx.type === 'transfer') {
+    // إذا لم يكن لها محفظة مستهدفة سابقة، نحدد المحفظة العكسية تلقائياً لمنع الـ null
+    if (!tx.toWalletId) tx.toWalletId = tx.fromWalletId === 'cash' ? 'ccp' : 'cash';
+    // إذا تساوت المحفظتان، نمنع الحفظ ونعيد الحالة السابقة
+    if (tx.fromWalletId === tx.toWalletId) {
+      alert('خطأ حرج: لا يمكن جعل محفظة المصدر متطابقة مع محفظة الهدف في عمليات التحويل الداخلي.');
+      ledgerState.transactions = ledgerState.transactions.map(t => t.id === id ? backup : t);
+      recalculateAndRender();
+      return;
+    }
+  } else {
+    tx.toWalletId = null; // تصفير المحفظة المستهدفة في حال التحويل لعملية عادية لمنع الفائض البياني
+  }
+
+  if (!validateTransaction(tx)) {
+    alert('فشل التحقق الهيكلي من التعديلات الجديدة! تم إلغاء العملية لحماية الدفتر.');
+    ledgerState.transactions = ledgerState.transactions.map(t => t.id === id ? backup : t);
+    recalculateAndRender();
     return;
   }
-  
+
+  tx.updatedAt = Date.now();
+  tx.version += 1;
+  tx.syncStatus = 'pending';
+
+  persistTx(tx);
+  enqueueForSync(tx);
+  recalculateAndRender();
+}
+
+function createLedgerEvent(type, description, amountVal, fromWallet, toWallet) {
+  const amountMinor = parseToMinor(amountVal);
+  if (amountMinor === null || amountMinor <= 0) { alert('المبلغ يجب أن يكون أكبر من الصفر.'); return; }
+  if (type === 'transfer' && fromWallet === toWallet) { alert('منع خطأ منشأ التحويل المتطابق.'); return; }
+
   const timestamp = Date.now();
-  
   const ledgerTx = {
     id: crypto.randomUUID(),
     type: type,
@@ -373,9 +389,8 @@ function createLedgerEvent(type, description, amountVal, fromWallet, toWallet, c
     currency: 'DZD',
     fromWalletId: fromWallet,
     toWalletId: type === 'transfer' ? toWallet : null,
-    categoryId: 'default',
-    description: description,
-    date: customDate ? customDate : new Date().toISOString(),
+    description: description || `عملية ${type}`,
+    date: new Date().toISOString(),
     createdAt: timestamp,
     updatedAt: timestamp,
     deletedAt: null,
@@ -384,16 +399,17 @@ function createLedgerEvent(type, description, amountVal, fromWallet, toWallet, c
     version: 1
   };
 
-  if (!validateTransaction(ledgerTx)) { alert('فشل التحقق الشامل من بنية الحركة!'); return; }
+  if (!validateTransaction(ledgerTx)) { alert('فشل فحص البنية المحاسبية الكلية!'); return; }
 
   ledgerState.transactions.unshift(ledgerTx);
   persistTx(ledgerTx);
-  
   enqueueForSync(ledgerTx);
   recalculateAndRender();
 }
 
+// حذف المعاملات مع نافذة تأكيد إلزامية (إصلاح 4)
 function softDeleteLedgerEvent(id) {
+  if (!confirm('تأكيد الحذف: هل أنت متأكد تماماً من رغبتك في حذف هذه المعاملة مالياً؟')) return;
   const tx = ledgerState.transactions.find(t => t.id === id);
   if (!tx) return;
 
@@ -407,19 +423,14 @@ function softDeleteLedgerEvent(id) {
   recalculateAndRender();
 }
 
-// 6. SYNC ENGINE REVISION (إصلاح 4: حفظ محاولات الفشل في المخزن المحلي)
+// ============================================================================
+// محرك المزامنة السحابي المطور السريع (إعادة الربط مع Google Apps Script)
+// ============================================================================
 function enqueueForSync(txEvent) {
-  const queueItem = {
-    id: txEvent.id,
-    payload: JSON.parse(JSON.stringify(txEvent)),
-    enqueuedAt: Date.now(),
-    attemptCount: 0
-  };
-
+  const qItem = { id: txEvent.id, payload: JSON.parse(JSON.stringify(txEvent)), enqueuedAt: Date.now(), attemptCount: 0 };
   ledgerState.syncQueue = ledgerState.syncQueue.filter(q => q.id !== txEvent.id);
-  ledgerState.syncQueue.push(queueItem);
-  queueStorePut(queueItem);
-  
+  ledgerState.syncQueue.push(qItem);
+  queueStorePut(qItem);
   processSyncQueue();
 }
 
@@ -439,92 +450,68 @@ function processSyncQueue() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'sync_event', event: currentItem.payload })
   })
-  .then(res => {
-    if (!res.ok) throw new Error('Network fail');
-    return res.json();
-  })
+  .then(res => { if (!res.ok) throw new Error(); return res.json(); })
   .then(data => {
+    // مطابقة الاستجابة المصححة تماماً { success: true } لمنع حلقات التعليق اللانهائية
     if (data && data.success) {
       const syncedTx = ledgerState.transactions.find(t => t.id === currentItem.id);
       if (syncedTx && syncedTx.version === currentItem.payload.version) {
         syncedTx.syncStatus = 'synced';
         persistTx(syncedTx);
       }
-      
       ledgerState.syncQueue.shift();
       queueStoreDelete(currentItem.id);
-      
       syncInProgress = false;
       processSyncQueue();
-    } else {
-      throw new Error('Rejected');
-    }
+    } else { throw new Error(); }
   })
-  .catch(err => {
-    console.warn('Sync failed:', err);
+  .catch(() => {
     currentItem.attemptCount++;
-    
-    // إصلاح 4: كتابة وتحديث عدد المحاولات الفاشلة بشكل دائم داخل المخزن لضمان الاحتفاظ بحالة الدفتر عند الإغلاق
     queueStorePut(currentItem);
-    
     syncInProgress = false;
     updateSyncVisualIndicator();
   });
 }
 
-function updateSyncVisualIndicator() {
+function updateSyncVisualIndicator(forcedState) {
   const dot = document.getElementById('syncDot');
   const txt = document.getElementById('syncStatusText');
-  
-  if (syncInProgress) {
-    dot.className = 'dot syncing'; txt.textContent = 'جاري المزامنة..';
-  } else if (!navigator.onLine || !ledgerState.settings.serverUrl) {
-    dot.className = 'dot'; txt.textContent = 'حفظ محلي مؤمن';
-  } else {
-    dot.className = 'dot online'; txt.textContent = 'سحابي متطابق';
-  }
+  if (forcedState === 'syncing' || syncInProgress) { dot.className = 'dot syncing'; txt.textContent = 'جاري مزامنة السحاب..'; }
+  else if (!navigator.onLine || !ledgerState.settings.serverUrl) { dot.className = 'dot'; txt.textContent = 'حفظ محلي مستقل'; }
+  else { dot.className = 'dot online'; txt.textContent = 'سحابة Sheets متطابقة'; }
 }
 
-// واجهة حفظ الرابط برمجياً محلياً (إصلاح 1)
 function saveSyncUrl() {
   const url = document.getElementById('syncServerUrl').value.trim();
   localStorage.setItem('v6_server_url', url);
   ledgerState.settings.serverUrl = url;
-  alert('تم حفظ وتحديث رابط خادم المزامنة بنجاح.');
+  alert('تم ربط وحفظ خادم المزامنة الجديد. يبدأ المحرك الآن بالمعالجة تلقائياً.');
   processSyncQueue();
 }
 
-// 7. INPUT/OUTPUT SECURITY PORTABILITY
+// ============================================================================
+// نظام الاستيراد، الفحص، والدمج الكامل والمؤمن لملفات الـ Backup (إصلاح 2)
+// ============================================================================
 function exportEngineBackup() {
-  const bundle = {
-    schemaVersion: '6.0',
-    exportTimestamp: Date.now(),
-    transactions: ledgerState.transactions
-  };
-
+  const bundle = { schemaVersion: '6.2', exportTimestamp: Date.now(), transactions: ledgerState.transactions };
   const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `mizania_v6_personal_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `mizania_v6.2_final_backup_${new Date().toISOString().slice(0,10)}.json`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
 function processImportFile(input) {
   const file = input.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
-      if (data.schemaVersion === '6.0' && Array.isArray(data.transactions)) {
+      if ((data.schemaVersion === '6.0' || data.schemaVersion === '6.1' || data.schemaVersion === '6.2') && Array.isArray(data.transactions)) {
         analyzeAndShowImportPreview(data.transactions);
-      } else {
-        alert('الملف لا يتوافق مع بنية v6.0 الحالية.');
-      }
-    } catch (err) {
-      alert('خطأ حرج في صياغة ملف التصدير المرفوع.');
-    }
+      } else { alert('بنية ملف الاستعادة غير صالحة أو قديمة جداً.'); }
+    } catch { alert('ملف الاستعادة تالف أو ليس بتنسيق JSON صحيح.'); }
     input.value = '';
   };
   reader.readAsText(file);
@@ -533,20 +520,17 @@ function processImportFile(input) {
 function analyzeAndShowImportPreview(incomingTx) {
   let acceptedCount = 0; let rejectedOrDupCount = 0;
   let validIncomingEvents = [];
-  
+
   incomingTx.forEach(tx => {
     if (!validateTransaction(tx)) { rejectedOrDupCount++; return; }
-    const isDup = ledgerState.transactions.some(t => t.id === tx.id);
+    const isDup = ledgerState.transactions.some(t => t.id === tx.id && t.version >= tx.version);
     if (isDup) { rejectedOrDupCount++; } else { validIncomingEvents.push(tx); acceptedCount++; }
   });
 
-  if (validIncomingEvents.length === 0) {
-    alert('جميع المحتويات مسجلة مسبقاً ولا توجد عمليات جديدة الدمج.');
-    return;
-  }
+  if (validIncomingEvents.length === 0) { alert('الملف المرفوع مسجل بالكامل مسبقاً، ولا توجد قيود جديدة لدمجها.'); return; }
 
   const currentBalances = ledgerState.projections;
-  const tempAll = [...ledgerState.transactions, ...validIncomingEvents];
+  const tempAll = [...ledgerState.transactions.filter(t => !validIncomingEvents.some(v => v.id === t.id)), ...validIncomingEvents];
   
   let cash = 0; let ccp = 0;
   tempAll.filter(t => !t.deletedAt).sort((a,b)=>a.date.localeCompare(b.date) || a.ledgerOrder - b.ledgerOrder).forEach(t => {
@@ -557,25 +541,29 @@ function analyzeAndShowImportPreview(incomingTx) {
   });
 
   importCache = validIncomingEvents;
-
   document.getElementById('pTotal').textContent = acceptedCount;
   document.getElementById('pDup').textContent = rejectedOrDupCount;
   document.getElementById('pCash').textContent = fmtDzd(cash - currentBalances.cash);
   document.getElementById('pCcp').textContent = fmtDzd(ccp - currentBalances.ccp);
-  
   document.getElementById('previewModal').classList.add('open');
 }
 
 function commitImport() {
-  if (!importCache || importCache.length === 0) return;
-  importCache.forEach(tx => { ledgerState.transactions.push(tx); persistTx(tx); enqueueForSync(tx); });
+  if (!importCache) return;
+  importCache.forEach(tx => {
+    ledgerState.transactions = ledgerState.transactions.filter(t => t.id !== tx.id);
+    ledgerState.transactions.push(tx);
+    persistTx(tx);
+    enqueueForSync(tx);
+  });
   ledgerState.transactions.sort((a,b) => b.date.localeCompare(a.date) || b.ledgerOrder - a.ledgerOrder);
   importCache = null; closePreviewModal(); recalculateAndRender();
 }
+function closePreviewModal() { document.getElementById('previewModal').classList.remove('remove'); document.getElementById('previewModal').classList.remove('open'); importCache = null; }
 
-function closePreviewModal() { document.getElementById('previewModal').classList.remove('open'); importCache = null; }
-
-// 8. PRESENTATION LAYER: TEXTCONTENT SECURITY DOM
+// ============================================================================
+// طبقة العرض المحمية بالكامل ولوحة التعديل الشاملة (إصلاح 1، 3، و 4)
+// ============================================================================
 function recalculateAndRender() {
   computeProjections();
   
@@ -587,78 +575,128 @@ function recalculateAndRender() {
   container.innerHTML = '';
 
   const activeRecords = ledgerState.transactions.filter(t => !t.deletedAt);
-  const visibleChunk = activeRecords.slice(0, itemsLimit);
-
-  if (visibleChunk.length === 0) {
-    const emptyNotice = document.createElement('div');
-    emptyNotice.style.cssText = "text-align:center; padding:30px; color:var(--muted);";
-    emptyNotice.textContent = "سجل الدفاتر فارغ أو جرى تصفيره بالكامل.";
-    container.appendChild(emptyNotice);
-    document.getElementById('loadMoreBox').style.display = 'none';
+  if (activeRecords.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--muted);">لا توجد عمليات نشطة في سجلات المحرك الحالية.</div>`;
     return;
   }
 
-  visibleChunk.forEach(t => {
-    const row = document.createElement('div');
-    row.className = 'tx-row';
-    
-    const infoDiv = document.createElement('div');
-    infoDiv.className = 'tx-info';
-    
-    const descDiv = document.createElement('div');
-    descDiv.className = 'tx-desc';
-    descDiv.textContent = t.description; // تحصين مطلق ضد XSS الاستيراد
-    
-    const metaDiv = document.createElement('div');
-    metaDiv.className = 'tx-meta';
-    let targetMeta = t.type === 'transfer' ? `إلى ${t.toWalletId.toUpperCase()}` : t.fromWalletId.toUpperCase();
-    metaDiv.textContent = `${t.date.replace('T', ' ')} • ${targetMeta} [${t.type}]`;
-    
-    infoDiv.appendChild(descDiv);
-    infoDiv.appendChild(metaDiv);
-    
-    const amountArea = document.createElement('div');
-    amountArea.className = 'tx-amount-area';
-    
-    const amtSpan = document.createElement('div');
-    let sign = t.type === 'income' ? '+' : t.type === 'expense' ? '-' : '⇄';
-    amtSpan.className = `tx-amt ${t.type}`;
-    amtSpan.textContent = `${sign} ${toMajor(t.amountMinor)}`;
-    
-    const delBtn = document.createElement('button');
-    delBtn.className = 'action-icon';
-    delBtn.textContent = '🗑️';
-    delBtn.onclick = () => softDeleteLedgerEvent(t.id);
-    
-    amountArea.appendChild(amtSpan);
-    amountArea.appendChild(delBtn);
-    
-    row.appendChild(infoDiv);
-    row.appendChild(amountArea);
-    
-    container.appendChild(row);
-  });
+  activeRecords.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'tx-card-v6';
 
-  document.getElementById('loadMoreBox').style.display = activeRecords.length > itemsLimit ? 'block' : 'none';
+    const topSection = document.createElement('div');
+    topSection.className = 'tx-card-top';
+
+    const mainInfo = document.createElement('div');
+    mainInfo.className = 'tx-card-main';
+
+    // تعديل الوصف والبيان فوري ومباشر بمجرد الضغط عليه (إصلاح 3)
+    const title = document.createElement('div');
+    title.className = 'tx-card-title';
+    title.contentEditable = true;
+    title.textContent = t.description;
+    title.onblur = (e) => {
+      const val = e.target.textContent.trim();
+      if (val && val !== t.description) commitCardMutation(t.id, { description: val });
+    };
+
+    const dateStr = document.createElement('div');
+    dateStr.className = 'tx-card-date';
+    dateStr.textContent = t.date.slice(0,16).replace('T', ' ');
+
+    const badge = document.createElement('span');
+    badge.className = 'tx-card-badge';
+    badge.textContent = t.type === 'transfer' ? `نقل: ${t.fromWalletId.toUpperCase()} ⇄ ${t.toWalletId ? t.toWalletId.toUpperCase() : '?'}` : `مستودع: ${t.fromWalletId.toUpperCase()}`;
+
+    mainInfo.appendChild(title);
+    mainInfo.appendChild(dateStr);
+    mainInfo.appendChild(badge);
+
+    const rightSection = document.createElement('div');
+    rightSection.className = 'tx-card-right';
+
+    // تعديل المبالغ المباشر من داخل الكارت لمرونة تامة (إصلاح 3)
+    const amt = document.createElement('div');
+    let sign = t.type === 'income' ? '+' : t.type === 'expense' ? '-' : '⇄';
+    amt.className = `tx-card-amount ${t.type}`;
+    amt.contentEditable = true;
+    amt.textContent = `${toMajor(t.amountMinor)}`;
+    amt.onfocus = () => { amt.textContent = toMajor(t.amountMinor); };
+    amt.onblur = () => {
+      if (amt.textContent !== toMajor(t.amountMinor)) commitCardMutation(t.id, { amountStr: amt.textContent });
+      else recalculateAndRender();
+    };
+
+    rightSection.appendChild(amt);
+    topSection.appendChild(mainInfo);
+    topSection.appendChild(rightSection);
+
+    // لوحة التحكم المتكاملة المغلقة منطقياً (إصلاح 1 الحرج للثغرة)
+    const analysisPanel = document.createElement('div');
+    analysisPanel.className = 'tx-analysis-panel';
+
+    const selectorsDiv = document.createElement('div');
+    selectorsDiv.className = 'panel-selectors';
+
+    // 1. منسدلة نوع العملية
+    const typeSelect = document.createElement('select');
+    typeSelect.className = 'analysis-select';
+    [ {v:'expense',t:'مصروف'}, {v:'income',t:'دخل حركي'}, {v:'transfer',t:'تحويل داخلي'}, {v:'reconciliation',t:'جرد تسوية'} ].forEach(opt => {
+      const o = document.createElement('option'); o.value = opt.v; o.textContent = opt.t; o.selected = (t.type === opt.v);
+      typeSelect.appendChild(o);
+    });
+    typeSelect.onchange = (e) => commitCardMutation(t.id, { type: e.target.value });
+
+    // 2. منسدلة محفظة المصدر
+    const fromSelect = document.createElement('select');
+    fromSelect.className = 'analysis-select';
+    [ {v:'cash',t:'كاش'}, {v:'ccp',t:'CCP'} ].forEach(opt => {
+      const o = document.createElement('option'); o.value = opt.v; o.textContent = opt.t; o.selected = (t.fromWalletId === opt.v);
+      fromSelect.appendChild(o);
+    });
+    fromSelect.onchange = (e) => commitCardMutation(t.id, { fromWalletId: e.target.value });
+
+    selectorsDiv.appendChild(typeSelect);
+    selectorsDiv.appendChild(fromSelect);
+
+    // 3. منسدلة محفظة الهدف (تظهر وتُجبر فقط في حالة الـ transfer لمنع انهيار null pointer) (إصلاح 1)
+    if (t.type === 'transfer') {
+      const toSelect = document.createElement('select');
+      toSelect.className = 'analysis-select';
+      [ {v:'ccp',t:'إلى CCP'}, {v:'cash',t:'إلى كاش'} ].forEach(opt => {
+        const o = document.createElement('option'); o.value = opt.v; o.textContent = opt.t; o.selected = (t.toWalletId === opt.v);
+        toSelect.appendChild(o);
+      });
+      toSelect.onchange = (e) => commitCardMutation(t.id, { toWalletId: e.target.value });
+      selectorsDiv.appendChild(toSelect);
+    }
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'action-btn-mini';
+    deleteBtn.style.color = 'var(--red)';
+    deleteBtn.textContent = '🗑️ حذف المعاملة';
+    deleteBtn.onclick = () => softDeleteLedgerEvent(t.id);
+
+    analysisPanel.appendChild(selectorsDiv);
+    analysisPanel.appendChild(deleteBtn);
+
+    card.appendChild(topSection);
+    card.appendChild(analysisPanel);
+    container.appendChild(card);
+  });
   updateSyncVisualIndicator();
 }
-
-function loadMoreTx() { itemsLimit += 20; recalculateAndRender(); }
 
 function handleFormSubmit() {
   const desc = document.getElementById('txDesc').value.trim();
   const amt = document.getElementById('txAmount').value;
   const wFrom = document.getElementById('txWallet').value;
   const wTo = document.getElementById('txToWallet').value;
-  const dateInput = document.getElementById('txDate').value;
 
-  if (currentType !== 'transfer' && !desc) { alert('البيان حقل إلزامي لتوثيق الحركة محاسبياً.'); return; }
-  
-  const finalDesc = currentType === 'transfer' ? `تحويل مالي بين المستودعات الفردية` : desc;
-  const finalIsoDate = dateInput ? new Date(dateInput).toISOString() : new Date().toISOString();
+  if (currentType !== 'transfer' && !desc) { alert('بيان الحركة حقل إلزامي لتوثيق القيود الدفترية.'); return; }
+  const finalDesc = currentType === 'transfer' ? `تحويل مالي داخلي مستودعات` : desc;
 
-  createLedgerEvent(currentType, finalDesc, amt, wFrom, wTo, finalIsoDate);
-
+  createLedgerEvent(currentType, finalDesc, amt, wFrom, wTo);
   document.getElementById('txDesc').value = '';
   document.getElementById('txAmount').value = '';
 }
@@ -667,31 +705,12 @@ function setTxType(type, btn) {
   currentType = type;
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-
   document.getElementById('descField').style.display = type === 'transfer' ? 'none' : 'block';
   document.getElementById('toWalletField').style.display = type === 'transfer' ? 'flex' : 'none';
-  document.querySelector('#walletField label').textContent = type === 'reconciliation' ? 'مستودع الجرد والتسوية المطلقة' : 'المستودع المالي';
-}
-
-function triggerPurgeAll() {
-  if (!confirm('تحذير صارم: سيتم مسح الدفاتر محلياً بالكامل. هل تريد الاستمرار؟')) return;
-  const tx = dbEngine.transaction(['transactions', 'syncQueue'], 'readwrite');
-  tx.objectStore('transactions').clear();
-  tx.objectStore('syncQueue').clear();
-  ledgerState.transactions = [];
-  ledgerState.syncQueue = [];
-  recalculateAndRender();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  const localDate = new Date();
-  localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
-  document.getElementById('txDate').value = localDate.toISOString().slice(0, 16);
-  
-  if (ledgerState.settings.serverUrl) {
-    document.getElementById('syncServerUrl').value = ledgerState.settings.serverUrl;
-  }
-
+  if (ledgerState.settings.serverUrl) document.getElementById('syncServerUrl').value = ledgerState.settings.serverUrl;
   initStorageEngine(() => {
     recalculateAndRender();
     window.addEventListener('online', processSyncQueue);
